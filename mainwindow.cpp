@@ -8,15 +8,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     myMaze = new MazeWidget;
-    mazeChanged();
+    mazeChanged(0);
+
     m_button_next = new QPushButton("Next maze", this);
     m_button_next->setGeometry(QRect(QPoint(100, 100),
         QSize(200, 50)));
-    connect(m_button_next, SIGNAL (clicked()), this, SLOT (handleButtonNext()));
+    connect(m_button_next, SIGNAL (clicked()), this, SLOT (buttonNext()));
+
     m_button_prev = new QPushButton("Prev maze", this);
     m_button_prev->setGeometry(QRect(QPoint(300, 100),
         QSize(200, 50)));
-    connect(m_button_prev, SIGNAL (clicked()), this, SLOT (handleButtonPrev()));
+    connect(m_button_prev, SIGNAL (clicked()), this, SLOT (buttonPrev()));
+
 }
 
 MainWindow::~MainWindow()
@@ -24,21 +27,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::mazeChanged()
+void MainWindow::mazeChanged(int step)
 {
-    myMaze->setMaze(1);
+    myMaze->setMaze(/*step*/);
 }
 
-void MainWindow::handleButtonNext()
- {
-    myMaze->setMaze(1);
- }
+void MainWindow::buttonNext()
+{
+    mazeChanged(1);
+}
 
-void MainWindow::handleButtonPrev()
- {
-    myMaze->setMaze(-1);
-    // change the text
-    //m_button->setText("Example");
-    // resize button
-    //m_button->resize(100,100);
- }
+void MainWindow::buttonPrev()
+{
+    mazeChanged(-1);
+}

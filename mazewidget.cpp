@@ -34,7 +34,7 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
 
     //save into a vector and draw each point
 
-    for(std::vector<Lines>::iterator it = lineList.begin(); it != lineList.end(); ++it) {
+    for(std::vector<Line *>::iterator it = actualLineList.begin(); it != actualLineList.end(); ++it) {
 
 
 
@@ -61,8 +61,97 @@ void MazeWidget::setVec(QList<QList<bool>> const& vec)
     // You can pre-paint pixmaps here, if you keep vec_ as value or make a function and keep it updated.
 }
 
-void MazeWidget::setMaze(int newMaze)
+void MazeWidget::setMaze(/*int newMaze*/)
 {
     //todo this vector that vector
+    //actualLineList = lineVecList[newMaze];
+    generate();
+    actualLineList = lineList;
     update();
+}
+
+void MazeWidget::createLine(int sx, int sy, int ex, int ey)
+{
+    line = new Line(sx,sy,ex,ey);
+    lineList.push_back(line);
+
+
+
+}
+
+
+
+void MazeWidget::generate()
+{
+    //todo generate constant labyrinths into lineList and than store in the base vector
+    //std::vector<Lines> lineList;
+    //std::vector<std::vector<Lines> > lineVecList;
+    //std::vector<Lines> actualLineList;
+
+    createLine(1,1,799,1);
+
+
+   /* line.setLine(1,1,799,1);
+    lineList.push_back(line);
+
+    line.setLine(100,1,100,100);
+    lineList.push_back(line);
+
+    line.setLine(100,100,799,100);
+    lineList.push_back(line);oid
+
+    line.setLine(799,1,799,600);
+    lineList.push_back(line);
+
+    line.setLine(700,100,700,200);
+    lineList.push_back(line);
+
+    line.setLine(700,200,799,200);
+    lineList.push_back(line);
+
+    line.setLine(1,100,1,699);
+    lineList.push_back(line);
+
+    line.setLine(1,200,100,200);
+    lineList.push_back(line);
+
+    line.setLine(100,200,100,600);
+    lineList.push_back(line);
+
+    line.setLine(1,600,100,600);
+    lineList.push_back(line);oid
+
+    line.setLine(1,699,799,699);
+    lineList.push_back(line);
+
+    line.setLine(200,200,200,699);
+    lineList.push_back(line);
+
+    line.setLine(200,200,600,200);
+    lineList.push_back(line);
+
+    line.setLine(300,300,799,300);
+    lineList.push_back(line);
+
+    line.setLine(300,300,300,400);
+    lineList.push_back(line);
+
+    line.setLine(300,400,799,400);
+    lineList.push_back(line);
+
+    line.setLine(300,600,600,600);
+    lineList.push_back(line);
+
+    line.setLine(300,600,300,699);
+    lineList.push_back(line);
+
+    line.setLine(700,600,799,600);
+    lineList.push_back(line);
+*/
+
+
+
+
+
+
 }

@@ -16,15 +16,16 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void mazeChanged();
+    void mazeChanged(int step);
     MazeWidget *myMaze;
 private:
     Ui::MainWindow *ui;
     QPushButton *m_button_next;
     QPushButton *m_button_prev;
 private slots:
-    void handleButtonNext();
-    void handleButtonPrev();
+
+    void buttonNext();
+    void buttonPrev();
 };
 
 #endif // MAINWINDOW_H

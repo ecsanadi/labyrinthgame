@@ -27,12 +27,12 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     mazewidget.cpp \
-    lines.cpp
+    line.cpp
 
 HEADERS += \
         mainwindow.h \
     mazewidget.h \
-    lines.h
+    line.h
 
 FORMS += \
         mainwindow.ui
