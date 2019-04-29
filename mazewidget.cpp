@@ -23,7 +23,7 @@ QSize MazeWidget::minimumSizeHint() const
 QSize MazeWidget::sizeHint() const
 {
 
-    return QSize(900, 800);
+    return QSize(800, 700);
 }
 
 
@@ -113,10 +113,8 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
 
     }
 
-    int penWidth = 5;
 
-    painter.setPen(QPen(Qt::blue, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter.drawPoint(200,200);
+
 
     //draw a "cursor" point
 

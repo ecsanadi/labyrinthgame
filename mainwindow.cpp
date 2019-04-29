@@ -2,29 +2,32 @@
 #include "ui_mainwindow.h"
 #include <QtWidgets>
 
-
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+class QPushButton;
+MainWindow::MainWindow(/*QWidget *parent*/) //:
+   /* QMainWindow(parent),
+    ui(new Ui::MainWindow)*/
 {
-    ui->setupUi(this);
+    //ui->setupUi(this);
     myMaze = new MazeWidget;
 
 
     m_button_next = new QPushButton("Next maze", this);
-    m_button_next->setGeometry(QRect(QPoint(600, 750),
-        QSize(70, 30)));
+   // m_button_next->setGeometry(QRect(QPoint(600, 750),
+   //     QSize(70, 30)));
+
     connect(m_button_next, SIGNAL (clicked()), this, SLOT (buttonNext()));
 
     m_button_prev = new QPushButton("Prev maze", this);
-    m_button_prev->setGeometry(QRect(QPoint(700, 750),
-        QSize(70, 30)));
+  //  m_button_prev->setGeometry(QRect(QPoint(700, 750),
+//        QSize(70, 30)));
     connect(m_button_prev, SIGNAL (clicked()), this, SLOT (buttonPrev()));
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setColumnStretch(0, 1);
     mainLayout->setColumnStretch(3, 1);
     mainLayout->addWidget(myMaze, 0, 0, 1, 4);
+    mainLayout->addWidget(m_button_next,4,1);
+    mainLayout->addWidget(m_button_prev,4,2);
 
 
     setLayout(mainLayout);
@@ -41,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+   // delete ui;
 }
 
 void MainWindow::mazeChanged(int step)
