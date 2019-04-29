@@ -9,6 +9,24 @@
 class MazeWidget : public QWidget
 {
     Q_OBJECT
+
+
+public:
+    MazeWidget(QWidget *parent = 0) :
+        QWidget(parent)
+    {
+        setBackgroundRole(QPalette::Base);
+        setAutoFillBackground(true);
+    }
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
+    void setVec(QList<QList<bool>> const& vec);
+    void setMaze(/*int newMaze*/);
+    void createLine(int, int, int, int);
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     QList<QList<bool>> vec_;
     std::vector<Line *> lineList;
@@ -16,18 +34,6 @@ private:
     std::vector<Line *> actualLineList;
     Line *line;
     void generate();
-
-public:
-    MazeWidget(QWidget *parent = 0) :
-        QWidget(parent)
-    {
-    }
-    void setVec(QList<QList<bool>> const& vec);
-    void setMaze(/*int newMaze*/);
-    void createLine(int, int, int, int);
-
-protected:
-    void paintEvent(QPaintEvent *event);
 
 };
 
