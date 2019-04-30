@@ -130,18 +130,6 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.save();
 
-
-
-    //save into a vector and draw each point
-
-   /* for(std::vector<Line *>::iterator it = actualLineList.begin(); it != actualLineList.end(); ++it) {
-
-              int w = 4;
-              painter.setPen(QPen(Qt::blue, w, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin));
-              painter.drawLine((*it)->beginX,(*it)->beginY,(*it)->endX,(*it)->endY);
-
-    }*/
-    //int w = 25;
     painter.setPen(QPen(Qt::blue, this->meretPen, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin));
     for (int y = 0; y < this->meretY; ++y) {
             for (int x = 0; x < this->meretX; ++x){
@@ -150,9 +138,6 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
                 }
             }
         }
-
-
-    //draw a "cursor" point
 
     painter.restore();
 
