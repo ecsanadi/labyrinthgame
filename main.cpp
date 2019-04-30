@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     myHeight *= 0.9;
     myWidth *= 0.9;    
 */
-    w.resize(900,800);
+    w.resize(725,800);
 
 
     w.show();
