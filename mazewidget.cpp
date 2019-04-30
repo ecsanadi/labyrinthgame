@@ -3,19 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-/*MazeWidget::MazeWidget(QWidget *parent = 0):
-    QWidget(parent)
-{
-}*/
-
-
-
-
-void MazeWidget::setVec(QList<QList<bool>> const& vec)
-{
-    vec_ = vec;
-    // You can pre-paint pixmaps here, if you keep vec_ as value or make a function and keep it updated.
-}
 
 QSize MazeWidget::minimumSizeHint() const
 {
@@ -31,14 +18,6 @@ QSize MazeWidget::sizeHint() const
 
 void MazeWidget::setMaze(int size)
 {
-    //todo this vector that vector
-    //actualLineList = lineVecList[newMaze];
-    //generate();
-    //this->actualLineList = this->lineList;
-    //repaint();
-    //this->repaint();
-    //Palya p;
-
     srand(time(0));
     switch (size) {
     case 1:
@@ -82,59 +61,14 @@ void MazeWidget::setMaze(int size)
 
     ures(p);
     labirintus(p, 1, 1);
+
     /* bejarat es kijarat */
     p[1][0] = Jarat;
     p[this->meretY - 2][this->meretX - 1] = Jarat;
 
-    /* ures palyara general egy labirintust */
-    //ures(p);
-  //  labirintus(p, 1, 1);
-    /* bejarat es kijarat */
-  //  p[1][0] = Jarat;
-  //  p[MERETY - 2][MERETX - 1] = Jarat;
-    /* mehet kirajzolasra */
-    //kirajzol(p);
     update();
 }
 
-void MazeWidget::createLine(int sx, int sy, int ex, int ey)
-{
-    line = new Line(sx,sy,ex,ey);
-    this->lineList.push_back(line);
-
-}
-
-
-
-void MazeWidget::generate()
-{
-    //todo generate constant labyrinths into lineList and than store in the base vector
-    //std::vector<Lines> lineList;
-    //std::vector<std::vector<Lines> > lineVecList;
-    //std::vector<Lines> actualLineList;
-
-    createLine(1,1,799,1);
-    createLine(1,1,799,1);
-    createLine(100,1,100,100);
-    createLine(100,100,799,100);
-    createLine(799,1,799,600);
-    createLine(700,100,700,200);
-    createLine(700,200,799,200);
-    createLine(1,100,1,699);
-    createLine(1,200,100,200);
-    createLine(100,200,100,600);
-    createLine(1,600,100,600);
-    createLine(1,699,799,699);
-    createLine(200,200,200,699);
-    createLine(200,200,600,200);
-    createLine(300,300,799,300);
-    createLine(300,300,300,400);
-    createLine(300,400,799,400);
-    createLine(300,600,600,600);
-    createLine(300,600,300,699);
-    createLine(700,600,799,600);
-
-}
 
 void MazeWidget::ures(Palya p) {
     for (int y = 0; y < this->meretY; ++y)

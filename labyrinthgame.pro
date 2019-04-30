@@ -26,13 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    mazewidget.cpp \
-    line.cpp
+    mazewidget.cpp
 
 HEADERS += \
         mainwindow.h \
-    mazewidget.h \
-    line.h
+    mazewidget.h
 
 FORMS += \
         mainwindow.ui
