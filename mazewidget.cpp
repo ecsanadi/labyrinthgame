@@ -29,7 +29,7 @@ QSize MazeWidget::sizeHint() const
 }
 
 
-void MazeWidget::setMaze(/*int newMaze*/)
+void MazeWidget::setMaze(int size)
 {
     //todo this vector that vector
     //actualLineList = lineVecList[newMaze];
@@ -40,12 +40,58 @@ void MazeWidget::setMaze(/*int newMaze*/)
     //Palya p;
 
     srand(time(0));
-    /* ures palyara general egy labirintust */
+    switch (size) {
+    case 1:
+        this->meretY=7;
+        this->meretX=9;
+        this->meretPen=100;
+
+
+        break;
+    case 2:
+        this->meretY=15;
+        this->meretX=19;
+        this->meretPen=50;
+
+
+        break;
+    case 3:
+        this->meretY=29;
+        this->meretX=39;
+        this->meretPen=25;
+
+        break;
+    case 4:
+        this->meretY=59;
+        this->meretX=79;
+        this->meretPen=12;
+
+        break;
+    case 5:
+        this->meretY=119;
+        this->meretX=159;
+        this->meretPen=6;
+
+        break;
+    default:
+        this->meretY=29;
+        this->meretX=39;
+        this->meretPen=25;
+        break;
+    }
+
     ures(p);
     labirintus(p, 1, 1);
     /* bejarat es kijarat */
     p[1][0] = Jarat;
-    p[MERETY - 2][MERETX - 1] = Jarat;
+    p[this->meretY - 2][this->meretX - 1] = Jarat;
+
+    /* ures palyara general egy labirintust */
+    //ures(p);
+  //  labirintus(p, 1, 1);
+    /* bejarat es kijarat */
+  //  p[1][0] = Jarat;
+  //  p[MERETY - 2][MERETX - 1] = Jarat;
     /* mehet kirajzolasra */
     //kirajzol(p);
     update();
@@ -91,8 +137,8 @@ void MazeWidget::generate()
 }
 
 void MazeWidget::ures(Palya p) {
-    for (int y = 0; y < MERETY; ++y)
-        for (int x = 0; x < MERETX; ++x)
+    for (int y = 0; y < this->meretY; ++y)
+        for (int x = 0; x < this->meretX; ++x)
             p[y][x] = Fal;
 }
 
@@ -128,13 +174,13 @@ void MazeWidget::labirintus(Palya p, int x, int y) {
             }
             break;
         case le:
-            if (y < MERETY - 2 && p[y + 2][x] != Jarat) {
+            if (y < this->meretY - 2 && p[y + 2][x] != Jarat) {
                 p[y + 1][x] = Jarat;
                 labirintus(p, x, y + 2);
             }
             break;
         case jobbra:
-            if (x < MERETX - 2 && p[y][x + 2] != Jarat) {
+            if (x < this->meretX - 2 && p[y][x + 2] != Jarat) {
                 p[y][x + 1] = Jarat;
                 labirintus(p, x + 2, y);
             }
@@ -145,22 +191,6 @@ void MazeWidget::labirintus(Palya p, int x, int y) {
 void MazeWidget::paintEvent(QPaintEvent */*event*/)
 {
 
-    /*QPixmap pixmap(vec_.front().size(), vec_.size()); // pixmap with scale 1:1
-    QPainter pixmap_painter(&pixmap);
-
-    for(int y = 0; y < vec_.size(); y++)
-        for(int x = 0; x < vec_[y].size(); x++)
-        {
-            pixmap_painter.setPen(vec_[y][x] ? QColor("white") : QColor("red"));
-            pixmap_painter.drawPoint(x, y); // Draw individual pixels
-        }
-
-    QPainter painter(this);
-    QPixmap pixmap_scaled = pixmap.scaled(size(), Qt::KeepAspectRatio); // scale to fit the widget
-    painter.drawPixmap(
-        (width() - pixmap_scaled.width()) / 2,
-        (height() - pixmap_scaled.height()) / 2,
-        pixmap_scaled.width(), pixmap_scaled.height(), pixmap_scaled); // draw with alignment in the middle*/
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -177,19 +207,14 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
               painter.drawLine((*it)->beginX,(*it)->beginY,(*it)->endX,(*it)->endY);
 
     }*/
-    int w = 25;
-    painter.setPen(QPen(Qt::blue, w, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin));
-
-    for (int y = 0; y < MERETY; ++y) {
-            for (int x = 0; x < MERETX; ++x){
-                /* itt hasznalja ki, hogy az enum ertekek szandekosan
-                 * egyeznek a karakterkodokkal */
-                //putchar(p[y][x]);
+    //int w = 25;
+    painter.setPen(QPen(Qt::blue, this->meretPen, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin));
+    for (int y = 0; y < this->meretY; ++y) {
+            for (int x = 0; x < this->meretX; ++x){
                 if (p[x][y] == Fal){
-                    painter.drawPoint(x*25,y*25);
+                    painter.drawPoint(x*this->meretPen,y*this->meretPen);
                 }
             }
-            //putchar('\n');
         }
 
 
