@@ -30,32 +30,32 @@ void MazeWidget::setMaze(int size)
     case 2:
         this->meretY=15;
         this->meretX=19;
-        this->meretPen=50;
+        this->meretPen=47;
 
 
         break;
     case 3:
-        this->meretY=29;
-        this->meretX=39;
-        this->meretPen=25;
+        this->meretY=25;
+        this->meretX=33;
+        this->meretPen=27;
 
         break;
     case 4:
         this->meretY=59;
-        this->meretX=79;
+        this->meretX=75;
         this->meretPen=12;
 
         break;
     case 5:
-        this->meretY=119;
-        this->meretX=159;
+        this->meretY=117;
+        this->meretX=151;
         this->meretPen=6;
 
         break;
     default:
-        this->meretY=29;
-        this->meretX=39;
-        this->meretPen=25;
+        this->meretY=25;
+        this->meretX=33;
+        this->meretPen=27;
         break;
     }
 
@@ -71,6 +71,11 @@ void MazeWidget::setMaze(int size)
 
 
 void MazeWidget::ures(Palya p) {
+    for (int y = 0; y < MERETY; ++y)
+        for (int x = 0; x < MERETX; ++x)
+            p[y][x] = Jarat;
+
+
     for (int y = 0; y < this->meretY; ++y)
         for (int x = 0; x < this->meretX; ++x)
             p[y][x] = Fal;
@@ -108,13 +113,13 @@ void MazeWidget::labirintus(Palya p, int x, int y) {
             }
             break;
         case le:
-            if (y < this->meretY - 2 && p[y + 2][x] != Jarat) {
+            if (y < ((this->meretY) - 2) && p[y + 2][x] != Jarat) {
                 p[y + 1][x] = Jarat;
                 labirintus(p, x, y + 2);
             }
             break;
         case jobbra:
-            if (x < this->meretX - 2 && p[y][x + 2] != Jarat) {
+            if (x < ((this->meretX) - 2) && p[y][x + 2] != Jarat) {
                 p[y][x + 1] = Jarat;
                 labirintus(p, x + 2, y);
             }
@@ -127,13 +132,18 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
 
 
     QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
+    //painter.setRenderHint(QPainter::Antialiasing, true);
     painter.save();
 
-    painter.setPen(QPen(Qt::blue, this->meretPen, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin));
+
     for (int y = 0; y < this->meretY; ++y) {
             for (int x = 0; x < this->meretX; ++x){
-                if (p[x][y] == Fal){
+                if (p[y][x] == Fal){
+                    painter.setPen(QPen(Qt::black, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+                    painter.drawPoint(x*this->meretPen,y*this->meretPen);
+                }
+                if (p[y][x] == Jarat){
+                    painter.setPen(QPen(Qt::white, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
                     painter.drawPoint(x*this->meretPen,y*this->meretPen);
                 }
             }

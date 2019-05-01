@@ -4,10 +4,19 @@
 
 class QPushButton;
 class QLabel;
+class QPalette;
 MainWindow::MainWindow()
 {
 
     myMaze = new MazeWidget;
+
+    QPalette pal = palette();
+
+    // set black background
+    pal.setColor(QPalette::Background, Qt::white);
+    myMaze->setAutoFillBackground(true);
+    myMaze->setPalette(pal);
+
 
     m_button_next = new QPushButton("New maze", this);
     connect(m_button_next, SIGNAL (clicked()), this, SLOT (buttonNext()));
@@ -29,6 +38,8 @@ MainWindow::MainWindow()
     mainLayout->addWidget(slider,4,2);
 
     setLayout(mainLayout);
+
+
 
     mazeChanged(0);
 
