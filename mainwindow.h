@@ -8,15 +8,18 @@
 
 
 class MazeWidget;
+class SerialReader;
 
 class MainWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow();
+    MainWindow(SerialReader *);
     ~MainWindow();
     MazeWidget *myMaze;
+    SerialReader* serial;
+    void setSerialReader(SerialReader *);
 private:
     QPushButton *m_button_next;
     QSlider *slider;
@@ -26,6 +29,7 @@ private:
 private slots:
     void buttonNext();    
     void mazeChanged(int step);
+    void shapeChanged();
 };
 
 #endif // MAINWINDOW_H

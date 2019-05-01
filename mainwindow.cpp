@@ -1,22 +1,21 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "mazewidget.h"
 #include <QtWidgets>
 
 class QPushButton;
 class QLabel;
 class QPalette;
-MainWindow::MainWindow()
+MainWindow::MainWindow(SerialReader* pserial)
 {
 
     myMaze = new MazeWidget;
 
-    QPalette pal = palette();
+    serial = pserial;
+    myMaze->setSerialReader(serial);
 
-    // set black background
-    pal.setColor(QPalette::Background, Qt::white);
-    myMaze->setAutoFillBackground(true);
-    myMaze->setPalette(pal);
-
+    connect(serial, SIGNAL(serialIsReady()),
+            this, SLOT(shapeChanged()));
 
     m_button_next = new QPushButton("New maze", this);
     connect(m_button_next, SIGNAL (clicked()), this, SLOT (buttonNext()));
@@ -39,9 +38,9 @@ MainWindow::MainWindow()
 
     setLayout(mainLayout);
 
-
-
     mazeChanged(0);
+
+    shapeChanged();
 
     setWindowTitle(tr("Labyrinth"));
 }
@@ -54,7 +53,8 @@ MainWindow::~MainWindow()
 void MainWindow::mazeChanged(int size)
 {
     this->mysize=size;
-    myMaze->setMaze(mysize);
+    serial->setDoDelete(true);
+    myMaze->setMaze(mysize);    
 }
 
 void MainWindow::buttonNext()
@@ -62,5 +62,13 @@ void MainWindow::buttonNext()
     mazeChanged(this->mysize);
 }
 
+void MainWindow::setSerialReader(SerialReader* pserial)
+{
+    serial = pserial;
+    myMaze->setSerialReader(serial);
+}
 
-
+void MainWindow::shapeChanged()
+{
+    myMaze->setShape(MazeWidget::Line);
+}

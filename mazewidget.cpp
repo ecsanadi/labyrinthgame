@@ -15,6 +15,16 @@ QSize MazeWidget::sizeHint() const
     return QSize(900, 700);
 }
 
+void MazeWidget::setShape(Shape shape)
+{
+    this->shape = shape;
+    update();
+}
+
+void MazeWidget::setSerialReader(SerialReader* pserial)
+{
+    serial = pserial;
+}
 
 void MazeWidget::setMaze(int size)
 {
@@ -24,38 +34,48 @@ void MazeWidget::setMaze(int size)
         this->meretY=7;
         this->meretX=9;
         this->meretPen=100;
-
+        this->iniPoint.x=10;
+        this->iniPoint.y=110;
 
         break;
     case 2:
         this->meretY=15;
         this->meretX=19;
         this->meretPen=47;
-
+        this->iniPoint.x=5;
+        this->iniPoint.y=50;
 
         break;
     case 3:
         this->meretY=25;
         this->meretX=33;
         this->meretPen=27;
+        this->iniPoint.x=2;
+        this->iniPoint.y=30;
 
         break;
     case 4:
         this->meretY=59;
         this->meretX=75;
         this->meretPen=12;
+        this->iniPoint.x=2;
+        this->iniPoint.y=15;
 
         break;
     case 5:
         this->meretY=117;
         this->meretX=151;
         this->meretPen=6;
+        this->iniPoint.x=1;
+        this->iniPoint.y=7;
 
         break;
     default:
         this->meretY=25;
         this->meretX=33;
         this->meretPen=27;
+        this->iniPoint.x=2;
+        this->iniPoint.y=30;
         break;
     }
 
@@ -135,19 +155,82 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     //painter.setRenderHint(QPainter::Antialiasing, true);
     painter.save();
 
-
+    // draw the labyrinth
     for (int y = 0; y < this->meretY; ++y) {
-            for (int x = 0; x < this->meretX; ++x){
-                if (p[y][x] == Fal){
-                    painter.setPen(QPen(Qt::black, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
-                    painter.drawPoint(x*this->meretPen,y*this->meretPen);
-                }
-                if (p[y][x] == Jarat){
-                    painter.setPen(QPen(Qt::white, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
-                    painter.drawPoint(x*this->meretPen,y*this->meretPen);
-                }
+        for (int x = 0; x < this->meretX; ++x){
+            if (p[y][x] == Fal){
+                painter.setPen(QPen(Qt::black, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+                painter.drawPoint(x*this->meretPen,y*this->meretPen);
+            }
+            if (p[y][x] == Jarat){
+                painter.setPen(QPen(Qt::white, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+                painter.drawPoint(x*this->meretPen,y*this->meretPen);
             }
         }
+    }
+
+    // draw the rotary path
+    if (serial->getDoDelete())
+    {
+        int lastColorCount = serial->getPointColorCount();
+        pointList.clear();
+        serial->setPointX(this->iniPoint.x);
+        serial->setPointY(this->iniPoint.y);
+        serial->setPointColorCount(lastColorCount);
+        serial->setDoDelete(false);
+    }
+    point.x=serial->getPointX();
+    point.y=serial->getPointY();
+    point.colorCounter=serial->getPointColorCount();
+
+    //keep drawing inside of the window
+    if (point.x < 0)
+    {
+        serial->setPointX(0);
+    }
+    if (point.x > width())
+    {
+        serial->setPointX(width());
+    }
+
+   if (point.y > height())
+    {
+        serial->setPointY(height());
+    }
+    if (point.y < 0)
+    {
+        serial->setPointY(0);
+    }
+
+    //restart color counter if the end is reached
+    if (point.colorCounter>=17)
+    {
+        serial->setPointColorCount(0);
+    }
+
+    //draw initial point
+    int w = this->meretPen / 4;
+    painter.setPen(QPen(static_cast<QColor>(serial->getMyColor()), w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.drawPoint(this->iniPoint.x,this->iniPoint.y);
+    //save into a vector and draw each point
+    pointList.push_back(point);
+    for(std::vector<Points>::iterator it = pointList.begin(); it != pointList.end(); ++it) {
+        if (it != pointList.end())
+        {
+            std::vector<Points>::iterator it2 = it;
+            it2++;
+            if (it2!=pointList.end())
+            {
+              serial->setMyColor(it->colorCounter);
+
+              painter.setPen(QPen(static_cast<QColor>(serial->getMyColor()), w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+              painter.drawLine(it->x,it->y,it2->x,it2->y);
+            }
+        }else{
+            break;
+        }
+    }
+
 
     painter.restore();
 

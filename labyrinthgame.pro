@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,11 +26,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    mazewidget.cpp
+    mazewidget.cpp \
+    points.cpp \
+    serialreader.cpp
 
 HEADERS += \
         mainwindow.h \
-    mazewidget.h
+    mazewidget.h \
+    points.h \
+    serialreader.h
 
 FORMS += \
         mainwindow.ui

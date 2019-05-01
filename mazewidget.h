@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QList>
 #include <QWidget>
-
+#include "serialreader.h"
 
 #define MERETX 153
 #define MERETY 119
@@ -21,10 +21,17 @@ public:
         QWidget(parent)
     {
         setBackgroundRole(QPalette::Base);
+        shape = Line;
+        iniPoint.x=2;
+        iniPoint.y=20;
+        pointList.push_back(iniPoint);
     }
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
     void setMaze(int size);
+    enum Shape { Line/*, Points, Polyline, Polygon, Rect, RoundedRect, Ellipse, Arc,
+                 Chord, Pie, Path, Text, Pixmap */};
+    void setSerialReader(SerialReader *);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -36,6 +43,14 @@ private:
     int meretX = 33;
     int meretY = 25;
     int meretPen = 27;
+    Shape shape;
+    SerialReader* serial;
+    Points point;
+    Points iniPoint;
+    std::vector<Points> pointList;
+
+public slots:
+    void setShape(Shape shape);
 
 };
 
