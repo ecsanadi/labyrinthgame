@@ -12,7 +12,11 @@ int main(int argc, char *argv[])
 
     //w.resize(900,800);
 
+
+
     w.show();
+
+
 
     serialReader.readingSerial();
 

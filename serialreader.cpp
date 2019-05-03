@@ -10,6 +10,8 @@ SerialReader::SerialReader()
     //set start position and color
     point.x=2;
     point.y=20;
+    //point.x=860;
+    //point.y=625;
     point.colorCounter=0;
 
     int tryCounter = 50;
@@ -65,7 +67,7 @@ SerialReader::SerialReader()
         QMessageBox messageBox;
         messageBox.critical(0,"Error","No USB connection!");
         messageBox.setFixedSize(500,200);
-        exit(1);
+        //exit(1);
     }
 
     std::cout<<"SUCCESS Connection!"<<std::endl;
@@ -75,8 +77,6 @@ SerialReader::SerialReader()
 
 void SerialReader::readingSerial()
 {
-
-
     QObject::connect(&serial, &QSerialPort::readyRead, [&]
         {
             //this is called when readyRead() is emitted
@@ -90,6 +90,7 @@ void SerialReader::readingSerial()
                 {
                     std::cout<<"RIGHT"<<std::endl;
                     int value = ((signed char)(datas[0]<<1))>>1;
+                    value = value * 2;
                     std::cout<<"value: "<<value<<std::endl;
                     if(value ==0)
                     {

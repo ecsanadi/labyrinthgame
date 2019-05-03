@@ -17,6 +17,9 @@ MainWindow::MainWindow(SerialReader* pserial)
     connect(serial, SIGNAL(serialIsReady()),
             this, SLOT(shapeChanged()));
 
+    connect(myMaze, SIGNAL(winGame()),
+            this, SLOT(winnerMsg()));
+
     m_button_next = new QPushButton("New maze", this);
     connect(m_button_next, SIGNAL (clicked()), this, SLOT (buttonNext()));
 
@@ -72,3 +75,11 @@ void MainWindow::shapeChanged()
 {
     myMaze->setShape(MazeWidget::Line);
 }
+
+void MainWindow::winnerMsg()
+{
+     QMessageBox::information(0, "Escaped", "Congratulation! You won!");
+     myMaze->setShape(MazeWidget::Line);
+}
+
+

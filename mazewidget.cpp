@@ -1,7 +1,10 @@
 #include "mazewidget.h"
+#include "mainwindow.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <QDebug>
+
 
 
 QSize MazeWidget::minimumSizeHint() const
@@ -24,6 +27,31 @@ void MazeWidget::setShape(Shape shape)
 void MazeWidget::setSerialReader(SerialReader* pserial)
 {
     serial = pserial;
+}
+
+void MazeWidget::getEndPixels()
+{
+    //store the end points of the new labyrinth
+    //int endLineBeginX;
+    //int endLineBeginY;
+    //int endLineEndY;
+    endPointList.clear();
+    //int loopStart = ((meretY - 2) * meretPen) - (meretPen / 2);
+    //int loopEnd = ((meretY - 2) * meretPen) + (meretPen / 2);
+    endLineBeginY = ((meretY - 2) * meretPen) - (meretPen / 2);
+    endLineEndY = ((meretY - 2) * meretPen) + (meretPen / 2);
+    //endpoints.x = ((meretX - 1) * meretPen) + (meretPen / 2);
+    endLineBeginX = ((meretX - 1) * meretPen) + (meretPen / 2);
+    //endpoints.colorCounter = serial->getPointColorCount();
+    /*for (int y = loopStart; y < loopEnd;y++)
+    {
+        endpoints.y = y;
+        endPointList.push_back(endpoints);
+
+        std::cout<<"x: "<<endpoints.x<<", y: "<<endpoints.y<<std::endl;
+    }*/
+    qPix = QPixmap::grabWidget(this);
+    image = (qPix.toImage());
 }
 
 void MazeWidget::setMaze(int size)
@@ -52,6 +80,8 @@ void MazeWidget::setMaze(int size)
         this->meretPen=27;
         this->iniPoint.x=2;
         this->iniPoint.y=30;
+        //this->iniPoint.x=860;
+        //this->iniPoint.y=625;
 
         break;
     case 4:
@@ -85,6 +115,8 @@ void MazeWidget::setMaze(int size)
     /* bejarat es kijarat */
     p[1][0] = Jarat;
     p[this->meretY - 2][this->meretX - 1] = Jarat;
+
+    getEndPixels();
 
     update();
 }
@@ -147,43 +179,8 @@ void MazeWidget::labirintus(Palya p, int x, int y) {
         }
 }
 
-void MazeWidget::paintEvent(QPaintEvent */*event*/)
+void MazeWidget::checkWindowEdges()
 {
-
-
-    QPainter painter(this);
-    //painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.save();
-
-    // draw the labyrinth
-    for (int y = 0; y < this->meretY; ++y) {
-        for (int x = 0; x < this->meretX; ++x){
-            if (p[y][x] == Fal){
-                painter.setPen(QPen(Qt::black, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
-                painter.drawPoint(x*this->meretPen,y*this->meretPen);
-            }
-            if (p[y][x] == Jarat){
-                painter.setPen(QPen(Qt::white, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
-                painter.drawPoint(x*this->meretPen,y*this->meretPen);
-            }
-        }
-    }
-
-    // draw the rotary path
-    if (serial->getDoDelete())
-    {
-        int lastColorCount = serial->getPointColorCount();
-        pointList.clear();
-        serial->setPointX(this->iniPoint.x);
-        serial->setPointY(this->iniPoint.y);
-        serial->setPointColorCount(lastColorCount);
-        serial->setDoDelete(false);
-    }
-    point.x=serial->getPointX();
-    point.y=serial->getPointY();
-    point.colorCounter=serial->getPointColorCount();
-
-    //keep drawing inside of the window
     if (point.x < 0)
     {
         serial->setPointX(0);
@@ -207,11 +204,77 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     {
         serial->setPointColorCount(0);
     }
+}
+
+void MazeWidget::restoreRotaryPosition()
+{
+    int lastColorCount = serial->getPointColorCount();
+    pointList.clear();
+    serial->setPointX(this->iniPoint.x);
+    serial->setPointY(this->iniPoint.y);
+    serial->setPointColorCount(lastColorCount);
+    serial->setDoDelete(false);
+}
+
+
+
+
+
+void MazeWidget::paintEvent(QPaintEvent */*event*/)
+{
+    QPainter painter(this);
+    painter.save();
+
+    // draw the labyrinth
+    for (int y = 0; y < this->meretY; ++y) {
+        for (int x = 0; x < this->meretX; ++x){
+            if (p[y][x] == Fal){
+                painter.setPen(QPen(Qt::black, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+                painter.drawPoint(x*this->meretPen,y*this->meretPen);
+            }
+            if (p[y][x] == Jarat){
+                painter.setPen(QPen(Qt::white, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+                painter.drawPoint(x*this->meretPen,y*this->meretPen);
+            }
+        }
+    }
+
+
+
+
+    // draw the rotary path
+    if (serial->getDoDelete())
+    {
+        restoreRotaryPosition();
+    }    
+
+    prevpoint = point;
+
+    point.x=serial->getPointX();
+    point.y=serial->getPointY();
+    point.colorCounter=serial->getPointColorCount();
+
+    //keep drawing inside of the window
+    checkWindowEdges();
+
+     color = (image.pixel(point.x, point.y));
+     if (color == Qt::black)
+     {
+         std::cout << " BLACK " << std::endl;
+         point = prevpoint;
+         serial->setPointX(prevpoint.x);
+         serial->setPointY(prevpoint.y);
+     }
+     else
+     {
+         std::cout << " OK  WHITE " << std::endl;
+     }
 
     //draw initial point
     int w = this->meretPen / 4;
     painter.setPen(QPen(static_cast<QColor>(serial->getMyColor()), w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawPoint(this->iniPoint.x,this->iniPoint.y);
+
     //save into a vector and draw each point
     pointList.push_back(point);
     for(std::vector<Points>::iterator it = pointList.begin(); it != pointList.end(); ++it) {
@@ -222,7 +285,6 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
             if (it2!=pointList.end())
             {
               serial->setMyColor(it->colorCounter);
-
               painter.setPen(QPen(static_cast<QColor>(serial->getMyColor()), w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
               painter.drawLine(it->x,it->y,it2->x,it2->y);
             }
@@ -238,4 +300,16 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     painter.setPen(palette().dark().color());
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
+
+    std::cout << "x: " << point.x << std::endl;
+    if (endLineBeginX <= point.x)
+    {
+        if (point.y > endLineBeginY && point.y < endLineEndY)
+        {
+            restoreRotaryPosition();
+            emit winGame();
+        }
+    }
+
+
 }

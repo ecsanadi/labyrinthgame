@@ -20,6 +20,8 @@ public:
     MazeWidget *myMaze;
     SerialReader* serial;
     void setSerialReader(SerialReader *);
+
+
 private:
     QPushButton *m_button_next;
     QSlider *slider;
@@ -30,6 +32,7 @@ private slots:
     void buttonNext();    
     void mazeChanged(int step);
     void shapeChanged();
+    void winnerMsg();
 };
 
 #endif // MAINWINDOW_H

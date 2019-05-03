@@ -5,7 +5,8 @@
 #include <QList>
 #include <QWidget>
 #include "serialreader.h"
-
+#include <QImage>
+#include <QColor>
 #define MERETX 153
 #define MERETY 119
 
@@ -24,6 +25,8 @@ public:
         shape = Line;
         iniPoint.x=2;
         iniPoint.y=20;
+        //iniPoint.x=860;
+        //iniPoint.y=625;
         pointList.push_back(iniPoint);
     }
     QSize minimumSizeHint() const override;
@@ -48,9 +51,25 @@ private:
     Points point;
     Points iniPoint;
     std::vector<Points> pointList;
+    void checkWindowEdges();
+    void restoreRotaryPosition();
+    void getEndPixels();
+    Points endpoints;
+    Points prevpoint;
+    std::vector<Points> endPointList;
+    int endLineBeginX;
+    int endLineBeginY;
+    int endLineEndY;
+    QImage image;
+    QPixmap qPix;
+    QColor color;
+
 
 public slots:
     void setShape(Shape shape);
+
+signals:
+    void winGame();
 
 };
 
