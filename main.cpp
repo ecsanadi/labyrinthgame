@@ -10,13 +10,18 @@ int main(int argc, char *argv[])
 
     MainWindow w(&serialReader);
 
-    //w.resize(900,800);
+    QSize screenSize = a.desktop()->availableGeometry().size();
 
+    int myHeight = screenSize.height();
+    int myWidth =screenSize.width();
 
+    if (myWidth-myHeight>=500)
+    {
+
+        w.resize(900,850);
+    }
 
     w.show();
-
-
 
     serialReader.readingSerial();
 

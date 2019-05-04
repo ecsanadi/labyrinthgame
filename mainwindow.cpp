@@ -32,11 +32,14 @@ MainWindow::MainWindow(SerialReader* pserial)
     slider->setTickPosition(QSlider::TicksBelow);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(mazeChanged(int)));
 
+    sizeLabel = new QLabel("Size: ", this);
+
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setColumnStretch(0, 1);
     mainLayout->setColumnStretch(3, 1);
     mainLayout->addWidget(myMaze, 0, 0, 1, 4);
-    mainLayout->addWidget(m_button_next,4,1);
+    mainLayout->addWidget(m_button_next,4,0);
+    mainLayout->addWidget(sizeLabel,4,1);
     mainLayout->addWidget(slider,4,2);
 
     setLayout(mainLayout);
@@ -78,8 +81,25 @@ void MainWindow::shapeChanged()
 
 void MainWindow::winnerMsg()
 {
-     QMessageBox::information(0, "Escaped", "Congratulation! You won!");
-     myMaze->setShape(MazeWidget::Line);
+    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    QMessageBox messageBox;
+    messageBox.setFont(fixedFont);
+    messageBox.setStyleSheet("QTextEdit { font-family: monospace; }");
+    messageBox.setWindowTitle("Escaped");
+    messageBox.setTextFormat(Qt::PlainText);
+    messageBox.setText("                Congratulation! You won!\n\n"
+
+
+"                                     .''.                \n"
+"         .''.      .        *''*    :_\\/_:     .         \n"
+"        :_\\/_:   _\\(/_  .:.*_\\/_*   : /\\ :  .'.:.'.      \n"
+"    .''.: /\\ :   ./)\\   ':'* /\\ * :  '..'.  -=:o:=-      \n"
+"   :_\\/_:'.:::.    ' *''*    * '.\\'/.' _\\(/_'.':'.'      \n"
+"   : /\\ : :::::     *_\\/_*     -= o =-  /)\\    '  *      \n"
+"    '..'  ':::'     * /\\ *     .'/.\\'.   '               \n"
+"        *            *..*         :                      \n");
+    messageBox.exec();
+    myMaze->setShape(MazeWidget::Line);
 }
 
 

@@ -56,7 +56,6 @@ private:
     void getEndPixels();
     Points endpoints;
     Points prevpoint;
-    std::vector<Points> endPointList;
     int endLineBeginX;
     int endLineBeginY;
     int endLineEndY;

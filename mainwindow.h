@@ -25,7 +25,7 @@ public:
 private:
     QPushButton *m_button_next;
     QSlider *slider;
-    //TODO: QLabel *sizeLabel;
+    QLabel *sizeLabel;
     int mysize = 3;
 
 private slots:

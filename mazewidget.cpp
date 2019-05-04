@@ -31,25 +31,11 @@ void MazeWidget::setSerialReader(SerialReader* pserial)
 
 void MazeWidget::getEndPixels()
 {
-    //store the end points of the new labyrinth
-    //int endLineBeginX;
-    //int endLineBeginY;
-    //int endLineEndY;
-    endPointList.clear();
-    //int loopStart = ((meretY - 2) * meretPen) - (meretPen / 2);
-    //int loopEnd = ((meretY - 2) * meretPen) + (meretPen / 2);
+
     endLineBeginY = ((meretY - 2) * meretPen) - (meretPen / 2);
     endLineEndY = ((meretY - 2) * meretPen) + (meretPen / 2);
-    //endpoints.x = ((meretX - 1) * meretPen) + (meretPen / 2);
     endLineBeginX = ((meretX - 1) * meretPen) + (meretPen / 2);
-    //endpoints.colorCounter = serial->getPointColorCount();
-    /*for (int y = loopStart; y < loopEnd;y++)
-    {
-        endpoints.y = y;
-        endPointList.push_back(endpoints);
 
-        std::cout<<"x: "<<endpoints.x<<", y: "<<endpoints.y<<std::endl;
-    }*/
     qPix = QPixmap::grabWidget(this);
     image = (qPix.toImage());
 }
