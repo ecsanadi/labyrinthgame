@@ -62,6 +62,7 @@ private:
     QImage image;
     QPixmap qPix;
     QColor color;
+    void checkWalls();
 
 
 public slots:

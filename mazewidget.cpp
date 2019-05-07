@@ -1,4 +1,5 @@
 #include "mazewidget.h"
+#include "points.h"
 #include "mainwindow.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -203,7 +204,235 @@ void MazeWidget::restoreRotaryPosition()
 }
 
 
+void MazeWidget::checkWalls()
+{
 
+    int sideDiff = 0;
+    int stepCount = 0;
+    sideDiff = abs(prevpoint.x - prevpoint.y);
+    Points tempPoint = prevpoint;
+
+    if (prevpoint.x < point.x && prevpoint.y < point.y)
+    {
+        // X1****
+        // *    *
+        // *    *
+        // *    *
+        // *    *
+        // *****X2
+
+        if (prevpoint.x < prevpoint.y)
+        {
+            while (tempPoint.x != point.x && tempPoint.y != point.y)
+            {
+                color = (image.pixel(tempPoint.x, tempPoint.y));
+                if (color == Qt::black)
+                {
+                    point = tempPoint;
+                    break;
+                }
+                while (stepCount < point.y)
+                {
+                    tempPoint.y++;
+                    stepCount += sideDiff;
+
+                }
+                tempPoint.x++;
+                stepCount = stepCount - point.y;
+            }
+        }
+        // X1*****************
+        // *                 *
+        // *                 *
+        // ******************X2
+        else
+        {
+            while (tempPoint.x != point.x && tempPoint.y != point.y)
+            {
+                color = (image.pixel(tempPoint.x, tempPoint.y));
+                if (color == Qt::black)
+                {
+                    point = tempPoint;
+                    break;
+                }
+
+                while (stepCount < point.x)
+                {
+                    tempPoint.x++;
+                    stepCount += sideDiff;
+
+                }
+                tempPoint.y++;
+                stepCount = stepCount - point.x;
+
+            }
+        }
+    }
+
+    else if (prevpoint.x < point.x && prevpoint.y > point.y)
+    {
+        // ****X2
+        // *    *
+        // *    *
+        // *    *
+        // *    *
+        // X1****
+
+        if (prevpoint.x < prevpoint.y)
+        {
+            while(tempPoint.x != point.x && tempPoint.y != point.y)
+            {
+                color = (image.pixel(tempPoint.x, tempPoint.y));
+                if (color == Qt::black)
+                {
+                    point = tempPoint;
+                    break;
+                }
+                while (stepCount < prevpoint.y)
+                {
+                    tempPoint.y--;
+                    stepCount += sideDiff;
+                }
+                tempPoint.x++;
+                stepCount -= prevpoint.y;
+            }
+        }
+        // ******************X2
+        // *                 *
+        // *                 *
+        // X1*****************
+        else
+        {
+            while(tempPoint.x != point.x && tempPoint.y != point.y)
+            {
+                color = (image.pixel(tempPoint.x, tempPoint.y));
+                if (color == Qt::black)
+                {
+                    point = tempPoint;
+                    break;
+                }
+                while(stepCount < point.x)
+                {
+                    tempPoint.x++;
+                    stepCount += sideDiff;
+                }
+                tempPoint.y--;
+                stepCount = stepCount - prevpoint.x;
+            }
+        }
+    }
+
+
+
+    else if (prevpoint.x > point.x && prevpoint.y > point.y)
+    {
+        // X2****
+        // *    *
+        // *    *
+        // *    *
+        // *    *
+        // *****X1
+
+        if (prevpoint.x < prevpoint.y)
+        {
+            while(tempPoint.x != point.x && tempPoint.y != point.y)
+            {
+                color = (image.pixel(tempPoint.x, tempPoint.y));
+                if (color == Qt::black)
+                {
+                    point = tempPoint;
+                    break;
+                }
+                while(stepCount < prevpoint.y)
+                {
+                    tempPoint.y--;
+                    stepCount += sideDiff;
+                }
+                tempPoint.x--;
+                stepCount -= prevpoint.y;
+            }
+        }
+        // X2*****************
+        // *                 *
+        // *                 *
+        // ******************X1
+        else
+        {
+            while(tempPoint.x != point.x && tempPoint.y != point.y)
+            {
+                color = (image.pixel(tempPoint.x, tempPoint.y));
+                if (color == Qt::black)
+                {
+                    point = tempPoint;
+                    break;
+                }
+                while (stepCount < prevpoint.x)
+                {
+                    tempPoint.x--;
+                    stepCount += sideDiff;
+                }
+                tempPoint.y--;
+                stepCount = stepCount - prevpoint.x;
+            }
+        }
+
+    }
+
+
+
+    else if (prevpoint.x > point.x && prevpoint.y < point.y)
+    {
+        // ****X1
+        // *    *
+        // *    *
+        // *    *
+        // *    *
+        // X2****
+
+        if (prevpoint.x < prevpoint.y)
+        {
+            while(tempPoint.x != point.x && tempPoint.y != point.y)
+            {
+                color = (image.pixel(tempPoint.x, tempPoint.y));
+                if (color == Qt::black)
+                {
+                    point = tempPoint;
+                    break;
+                }
+                while (stepCount<point.y)
+                {
+                    tempPoint.y++;
+                    stepCount += sideDiff;
+                }
+                tempPoint.x--;
+                stepCount = stepCount - point.y;
+            }
+        }
+        // ******************X1
+        // *                 *
+        // *                 *
+        // X2******************
+        else
+        {
+            while(tempPoint.x != point.x && tempPoint.y != point.y)
+            {
+                color = (image.pixel(tempPoint.x, tempPoint.y));
+                if (color == Qt::black)
+                {
+                    point = tempPoint;
+                    break;
+                }
+                while (stepCount < prevpoint.x)
+                {
+                    tempPoint.x--;
+                    stepCount += sideDiff;
+                }
+                tempPoint.y++;
+                stepCount = stepCount - prevpoint.x;
+            }
+        }
+    }
+}
 
 
 void MazeWidget::paintEvent(QPaintEvent */*event*/)
