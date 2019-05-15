@@ -90,7 +90,7 @@ void SerialReader::readingSerial()
                 {
                     std::cout<<"RIGHT"<<std::endl;
                     int value = ((signed char)(datas[0]<<1))>>1;
-                    value = value * 2;
+                    //value = value * 2;
                     std::cout<<"value: "<<value<<std::endl;
                     if(value ==0)
                     {

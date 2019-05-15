@@ -38,6 +38,7 @@ void MazeWidget::getEndPixels()
     endLineBeginX = ((meretX - 1) * meretPen) + (meretPen / 2);
 
     qPix = QPixmap::grabWidget(this);
+   // qPix = QWidget::grab(this);
     image = (qPix.toImage());
 }
 
@@ -103,7 +104,9 @@ void MazeWidget::setMaze(int size)
     p[1][0] = Jarat;
     p[this->meretY - 2][this->meretX - 1] = Jarat;
 
-    getEndPixels();
+    this->prevpoint = this->iniPoint;
+
+    getEndPixels();    
 
     update();
 }
@@ -201,237 +204,348 @@ void MazeWidget::restoreRotaryPosition()
     serial->setPointY(this->iniPoint.y);
     serial->setPointColorCount(lastColorCount);
     serial->setDoDelete(false);
+    prevpoint = iniPoint;
 }
 
 
 void MazeWidget::checkWalls()
 {
-
-    int sideDiff = 0;
-    int stepCount = 0;
-    sideDiff = abs(prevpoint.x - prevpoint.y);
-    Points tempPoint = prevpoint;
-
-    if (prevpoint.x < point.x && prevpoint.y < point.y)
+    if (prevpoint.x != 0 && prevpoint.y != 0)
     {
-        // X1****
-        // *    *
-        // *    *
-        // *    *
-        // *    *
-        // *****X2
+        bool xSideBigger = abs(point.x - prevpoint.x) >= abs(point.y - prevpoint.y);
+        bool ySideBigger = abs(point.x - prevpoint.x) < abs(point.y - prevpoint.y);
 
-        if (prevpoint.x < prevpoint.y)
+        int stepCount = 0;
+        int longSide = 0;
+        int shortSide = 0;
+
+        bool blackFound = false;
+
+        if(xSideBigger)
         {
-            while (tempPoint.x != point.x && tempPoint.y != point.y)
-            {
-                color = (image.pixel(tempPoint.x, tempPoint.y));
-                if (color == Qt::black)
-                {
-                    point = tempPoint;
-                    break;
-                }
-                while (stepCount < point.y)
-                {
-                    tempPoint.y++;
-                    stepCount += sideDiff;
-
-                }
-                tempPoint.x++;
-                stepCount = stepCount - point.y;
-            }
+            longSide  = abs(prevpoint.x - point.x);
+            shortSide = abs(prevpoint.y - point.y);
         }
-        // X1*****************
-        // *                 *
-        // *                 *
-        // ******************X2
-        else
+        if(ySideBigger)
         {
-            while (tempPoint.x != point.x && tempPoint.y != point.y)
-            {
-                color = (image.pixel(tempPoint.x, tempPoint.y));
-                if (color == Qt::black)
-                {
-                    point = tempPoint;
-                    break;
-                }
-
-                while (stepCount < point.x)
-                {
-                    tempPoint.x++;
-                    stepCount += sideDiff;
-
-                }
-                tempPoint.y++;
-                stepCount = stepCount - point.x;
-
-            }
+            shortSide = abs(prevpoint.x - point.x);
+            longSide  = abs(prevpoint.y - point.y);
         }
+
+        Points tempPoint = this->prevpoint;
+
+        if (prevpoint.x < point.x)
+        {
+                if (prevpoint.y < point.y)
+                {
+                    if( xSideBigger )
+                    {
+                        // X1********
+                        // *        *
+                        // ********X2
+                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        {
+                            while (stepCount < longSide)
+                            {
+                                color = (image.pixel(tempPoint.x, tempPoint.y));
+                                if (color == Qt::black)
+                                {
+                                    blackFound = true;
+                                    serial->setPointX(tempPoint.x-((meretPen/4)/2));
+                                    serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                                    break;
+                                }
+                                tempPoint.x++;
+                                stepCount += shortSide;
+                            }
+                            tempPoint.y++;
+                            stepCount = stepCount - longSide;
+                        }
+
+                    }
+                    else if ( ySideBigger )
+                    {
+                        // X1***
+                        // *   *
+                        // *   *
+                        // *   *
+                        // ***X2
+                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        {
+                            while (stepCount < longSide)
+                            {
+                                color = (image.pixel(tempPoint.x, tempPoint.y));
+                                if (color == Qt::black)
+                                {
+                                    blackFound = true;
+                                    serial->setPointX(tempPoint.x-((meretPen/4)/2));
+                                    serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                                    break;
+                                }
+                                tempPoint.y++;
+                                stepCount += shortSide;
+                            }
+                            tempPoint.x++;
+                            stepCount = stepCount - longSide;
+                        }
+                    }
+                }  // if (prevpoint.x < point.x)
+
+                else if (prevpoint.y > point.y)
+                {
+                    if( xSideBigger )
+                    {
+                        // ********X2
+                        // *        *
+                        // X1********
+                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        {
+                            while (stepCount < longSide)
+                            {
+                                color = (image.pixel(tempPoint.x, tempPoint.y));
+                                if (color == Qt::black)
+                                {
+                                    blackFound = true;
+                                    serial->setPointX(tempPoint.x-((meretPen/4)/2));
+                                    serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                                    break;
+                                }
+                                tempPoint.x++;
+                                stepCount += shortSide;
+                            }
+                            tempPoint.y--;
+                            stepCount = stepCount - longSide;
+                        }
+                    }
+                    else if ( ySideBigger )
+                    {
+                        // ***X2
+                        // *   *
+                        // *   *
+                        // *   *
+                        // X1***
+                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        {
+                            while (stepCount < longSide)
+                            {
+                                color = (image.pixel(tempPoint.x, tempPoint.y));
+                                if (color == Qt::black)
+                                {
+                                    blackFound = true;
+                                    serial->setPointX(tempPoint.x-((meretPen/4)/2));
+                                    serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                                    break;
+                                }
+                                tempPoint.y--;
+                                stepCount += shortSide;
+                            }
+                            tempPoint.x++;
+                            stepCount = stepCount - longSide;
+                        }
+                    }
+                }
+                else if (prevpoint.y == point.y)
+                {
+                    // X1*******X2
+                    while ( (tempPoint.x != point.x) || !blackFound )
+                    {
+                            color = (image.pixel(tempPoint.x, tempPoint.y));
+                            if (color == Qt::black)
+                            {
+                                blackFound = true;
+                                serial->setPointX(tempPoint.x-((meretPen/4)/2));
+
+                                break;
+                            }
+                            tempPoint.x++;
+                    }
+                }
+                else
+                {
+                    std::cout<<"should not be here"<<std::endl;
+                }
+        }
+        else if (prevpoint.x > point.x)
+        {
+                if (prevpoint.y < point.y)
+                {
+                    if( xSideBigger )
+                    {
+                        // ********X1
+                        // *        *
+                        // X2********
+                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        {
+                            while (stepCount < longSide)
+                            {
+                                color = (image.pixel(tempPoint.x, tempPoint.y));
+                                if (color == Qt::black)
+                                {
+                                    blackFound = true;
+                                    //serial->setPointX(tempPoint.x+((meretPen/4)/2));
+                                    //serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                                    break;
+                                }
+                                tempPoint.x--;
+                                stepCount += shortSide;
+                            }
+                            tempPoint.y++;
+                            stepCount = stepCount - longSide;
+                        }
+                    }
+                    else if ( ySideBigger )
+                    {
+                        // ***X1
+                        // *   *
+                        // *   *
+                        // *   *
+                        // X2***
+                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        {
+                            while (stepCount < longSide)
+                            {
+                                color = (image.pixel(tempPoint.x, tempPoint.y));
+                                if (color == Qt::black)
+                                {
+                                    blackFound = true;
+                                    //serial->setPointX(tempPoint.x+((meretPen/4)/2));
+                                    //serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                                    break;
+                                }
+                                tempPoint.y++;
+                                stepCount += shortSide;
+                            }
+                            tempPoint.x--;
+                            stepCount = stepCount - longSide;
+                        }
+                    }
+                }
+                else if (prevpoint.y > point.y)
+                {
+                    if( xSideBigger )
+                    {
+                        // X2********
+                        // *        *
+                        // *********X1
+                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        {
+                            while (stepCount < longSide)
+                            {
+                                color = (image.pixel(tempPoint.x, tempPoint.y));
+                                if (color == Qt::black)
+                                {
+                                    blackFound = true;
+                                    //serial->setPointX(tempPoint.x+((meretPen/4)/2));
+                                    //serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                                    break;
+                                }
+                                tempPoint.x--;
+                                stepCount += shortSide;
+                            }
+                            tempPoint.y--;
+                            stepCount = stepCount - longSide;
+                        }
+                    }
+                    else if ( ySideBigger )
+                    {
+                        // X2***
+                        // *   *
+                        // *   *
+                        // *   *
+                        // ***X1
+                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        {
+                            while (stepCount < longSide)
+                            {
+                                color = (image.pixel(tempPoint.x, tempPoint.y));
+                                if (color == Qt::black)
+                                {
+                                    blackFound = true;
+                                    //serial->setPointX(tempPoint.x+((meretPen/4)/2));
+                                    //serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                                    break;
+                                }
+                                tempPoint.y--;
+                                stepCount += shortSide;
+                            }
+                            tempPoint.x--;
+                            stepCount = stepCount - longSide;
+                        }
+                    }
+                }
+                else if (prevpoint.y == point.y)
+                {
+                    // X2*******X1
+                    while ( (tempPoint.x != point.x) || !blackFound )
+                    {
+                            color = (image.pixel(tempPoint.x, tempPoint.y));
+                            if (color == Qt::black)
+                            {
+                                blackFound = true;
+                                serial->setPointX(tempPoint.x+((meretPen/4)/2));
+                                break;
+                            }
+                            tempPoint.x--;
+                    }
+                }
+                else
+                {
+                    std::cout<<"should not be here"<<std::endl;
+                }
+        }
+        else if(prevpoint.x == point.x)
+        {
+            if (prevpoint.y < point.y)
+            {
+                // X1
+                // *
+                // *
+                // *
+                // X2
+                while (  (tempPoint.y != point.y) || !blackFound )
+                {
+                        color = (image.pixel(tempPoint.x, tempPoint.y));
+                        if (color == Qt::black)
+                        {
+                            blackFound = true;
+                            serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                            break;
+                        }
+                        tempPoint.y++;
+                }
+            }
+            else if (prevpoint.y > point.y)
+            {
+                // X2
+                // *
+                // *
+                // *
+                // X1
+                while (  (tempPoint.y != point.y) || !blackFound )
+                {
+                        color = (image.pixel(tempPoint.x, tempPoint.y));
+                        if (color == Qt::black)
+                        {
+                            blackFound = true;
+                            serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                            break;
+                        }
+                        tempPoint.y--;
+                }
+            }
+
+        }
+        /*if (blackFound)
+        {
+
+            point.x=serial->getPointX();
+            point.y=serial->getPointY();
+            point.colorCounter=serial->getPointColorCount();
+            blackFound = false;
+        }*/
     }
 
-    else if (prevpoint.x < point.x && prevpoint.y > point.y)
-    {
-        // ****X2
-        // *    *
-        // *    *
-        // *    *
-        // *    *
-        // X1****
 
-        if (prevpoint.x < prevpoint.y)
-        {
-            while(tempPoint.x != point.x && tempPoint.y != point.y)
-            {
-                color = (image.pixel(tempPoint.x, tempPoint.y));
-                if (color == Qt::black)
-                {
-                    point = tempPoint;
-                    break;
-                }
-                while (stepCount < prevpoint.y)
-                {
-                    tempPoint.y--;
-                    stepCount += sideDiff;
-                }
-                tempPoint.x++;
-                stepCount -= prevpoint.y;
-            }
-        }
-        // ******************X2
-        // *                 *
-        // *                 *
-        // X1*****************
-        else
-        {
-            while(tempPoint.x != point.x && tempPoint.y != point.y)
-            {
-                color = (image.pixel(tempPoint.x, tempPoint.y));
-                if (color == Qt::black)
-                {
-                    point = tempPoint;
-                    break;
-                }
-                while(stepCount < point.x)
-                {
-                    tempPoint.x++;
-                    stepCount += sideDiff;
-                }
-                tempPoint.y--;
-                stepCount = stepCount - prevpoint.x;
-            }
-        }
-    }
-
-
-
-    else if (prevpoint.x > point.x && prevpoint.y > point.y)
-    {
-        // X2****
-        // *    *
-        // *    *
-        // *    *
-        // *    *
-        // *****X1
-
-        if (prevpoint.x < prevpoint.y)
-        {
-            while(tempPoint.x != point.x && tempPoint.y != point.y)
-            {
-                color = (image.pixel(tempPoint.x, tempPoint.y));
-                if (color == Qt::black)
-                {
-                    point = tempPoint;
-                    break;
-                }
-                while(stepCount < prevpoint.y)
-                {
-                    tempPoint.y--;
-                    stepCount += sideDiff;
-                }
-                tempPoint.x--;
-                stepCount -= prevpoint.y;
-            }
-        }
-        // X2*****************
-        // *                 *
-        // *                 *
-        // ******************X1
-        else
-        {
-            while(tempPoint.x != point.x && tempPoint.y != point.y)
-            {
-                color = (image.pixel(tempPoint.x, tempPoint.y));
-                if (color == Qt::black)
-                {
-                    point = tempPoint;
-                    break;
-                }
-                while (stepCount < prevpoint.x)
-                {
-                    tempPoint.x--;
-                    stepCount += sideDiff;
-                }
-                tempPoint.y--;
-                stepCount = stepCount - prevpoint.x;
-            }
-        }
-
-    }
-
-
-
-    else if (prevpoint.x > point.x && prevpoint.y < point.y)
-    {
-        // ****X1
-        // *    *
-        // *    *
-        // *    *
-        // *    *
-        // X2****
-
-        if (prevpoint.x < prevpoint.y)
-        {
-            while(tempPoint.x != point.x && tempPoint.y != point.y)
-            {
-                color = (image.pixel(tempPoint.x, tempPoint.y));
-                if (color == Qt::black)
-                {
-                    point = tempPoint;
-                    break;
-                }
-                while (stepCount<point.y)
-                {
-                    tempPoint.y++;
-                    stepCount += sideDiff;
-                }
-                tempPoint.x--;
-                stepCount = stepCount - point.y;
-            }
-        }
-        // ******************X1
-        // *                 *
-        // *                 *
-        // X2******************
-        else
-        {
-            while(tempPoint.x != point.x && tempPoint.y != point.y)
-            {
-                color = (image.pixel(tempPoint.x, tempPoint.y));
-                if (color == Qt::black)
-                {
-                    point = tempPoint;
-                    break;
-                }
-                while (stepCount < prevpoint.x)
-                {
-                    tempPoint.x--;
-                    stepCount += sideDiff;
-                }
-                tempPoint.y++;
-                stepCount = stepCount - prevpoint.x;
-            }
-        }
-    }
 }
 
 
@@ -454,25 +568,37 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
         }
     }
 
-
-
-
     // draw the rotary path
     if (serial->getDoDelete())
     {
         restoreRotaryPosition();
     }    
 
-    prevpoint = point;
-
+    //Get current point
     point.x=serial->getPointX();
     point.y=serial->getPointY();
-    point.colorCounter=serial->getPointColorCount();
+    point.colorCounter=serial->getPointColorCount();    
 
-    //keep drawing inside of the window
-    checkWindowEdges();
+    // if moving
+    //if(point.x != prevpoint.x && point.y != prevpoint.y)
+   // {
+        //keep drawing inside of the window
+        checkWindowEdges();
 
-     color = (image.pixel(point.x, point.y));
+        //Don!t walk trough walls
+        checkWalls();
+
+        // Save changes
+        point.x=serial->getPointX();
+        point.y=serial->getPointY();
+        point.colorCounter=serial->getPointColorCount();
+
+        pointList.push_back(point);
+
+        prevpoint = point;
+   // }
+
+     /*color = (image.pixel(point.x, point.y));
      if (color == Qt::black)
      {
          std::cout << " BLACK " << std::endl;
@@ -483,7 +609,7 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
      else
      {
          std::cout << " OK  WHITE " << std::endl;
-     }
+     }*/
 
     //draw initial point
     int w = this->meretPen / 4;
@@ -491,7 +617,8 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     painter.drawPoint(this->iniPoint.x,this->iniPoint.y);
 
     //save into a vector and draw each point
-    pointList.push_back(point);
+
+
     for(std::vector<Points>::iterator it = pointList.begin(); it != pointList.end(); ++it) {
         if (it != pointList.end())
         {

@@ -28,6 +28,7 @@ public:
         //iniPoint.x=860;
         //iniPoint.y=625;
         pointList.push_back(iniPoint);
+
     }
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
