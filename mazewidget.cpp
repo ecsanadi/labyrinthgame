@@ -210,8 +210,10 @@ void MazeWidget::restoreRotaryPosition()
 
 void MazeWidget::checkWalls()
 {
-    if (prevpoint.x != 0 && prevpoint.y != 0)
+    std::cout<<"prevpoint.x: "<<prevpoint.x<<", prevpoint.y: "<<prevpoint.y<<", point.x: "<<point.x<<", point.y: "<<point.y<<std::endl;
+    if ((prevpoint.x != 0 && prevpoint.y != 0) && (prevpoint.x != point.x || prevpoint.y != point.y))
     {
+        std::cout<<"INSIDE"<<std::endl;
         bool xSideBigger = abs(point.x - prevpoint.x) >= abs(point.y - prevpoint.y);
         bool ySideBigger = abs(point.x - prevpoint.x) < abs(point.y - prevpoint.y);
 
@@ -225,11 +227,13 @@ void MazeWidget::checkWalls()
         {
             longSide  = abs(prevpoint.x - point.x);
             shortSide = abs(prevpoint.y - point.y);
+            std::cout << "X is bigger. LongS: " << longSide << ", ShortS: "<< shortSide << std::endl;
         }
         if(ySideBigger)
         {
             shortSide = abs(prevpoint.x - point.x);
             longSide  = abs(prevpoint.y - point.y);
+            std::cout << "Y is bigger. LongS: " << longSide << ", ShortS: "<< shortSide << std::endl;
         }
 
         Points tempPoint = this->prevpoint;
@@ -243,16 +247,21 @@ void MazeWidget::checkWalls()
                         // X1********
                         // *        *
                         // ********X2
-                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        std::cout << "1. case:" << std::endl;
+                        while ( ((tempPoint.x <= point.x) || (tempPoint.y <= point.y)) && !blackFound )
                         {
+
                             while (stepCount < longSide)
                             {
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
+                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                                 color = (image.pixel(tempPoint.x, tempPoint.y));
                                 if (color == Qt::black)
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x-((meretPen/4)/2));
-                                    serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                                    serial->setPointX(tempPoint.x-((this->meretPen/4)+1));
+                                    serial->setPointY(tempPoint.y-((this->meretPen/4)+1));
+                                    std::cout<<"BLACK FOUND!!!"<<std::endl;
                                     break;
                                 }
                                 tempPoint.x++;
@@ -270,16 +279,20 @@ void MazeWidget::checkWalls()
                         // *   *
                         // *   *
                         // ***X2
-                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        std::cout << "2. case:" << std::endl;
+                        while ( ((tempPoint.x <= point.x) || (tempPoint.y <= point.y)) && !blackFound )
                         {
                             while (stepCount < longSide)
                             {
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
+                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                                 color = (image.pixel(tempPoint.x, tempPoint.y));
                                 if (color == Qt::black)
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x-((meretPen/4)/2));
-                                    serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                                    serial->setPointX(tempPoint.x-((this->meretPen/4)+1));
+                                    serial->setPointY(tempPoint.y-((this->meretPen/4)+1));
+                                    std::cout<<"BLACK FOUND!!!"<<std::endl;
                                     break;
                                 }
                                 tempPoint.y++;
@@ -298,16 +311,20 @@ void MazeWidget::checkWalls()
                         // ********X2
                         // *        *
                         // X1********
-                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        std::cout << "3. case:" << std::endl;
+                        while ( ((tempPoint.x <= point.x) || (tempPoint.y >= point.y)) && !blackFound )
                         {
                             while (stepCount < longSide)
                             {
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
+                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                                 color = (image.pixel(tempPoint.x, tempPoint.y));
                                 if (color == Qt::black)
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x-((meretPen/4)/2));
-                                    serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                                    serial->setPointX(tempPoint.x-((this->meretPen/4)+1));
+                                    serial->setPointY(tempPoint.y+((this->meretPen/4)+1));
+                                    std::cout<<"BLACK FOUND!!!"<<std::endl;
                                     break;
                                 }
                                 tempPoint.x++;
@@ -324,16 +341,20 @@ void MazeWidget::checkWalls()
                         // *   *
                         // *   *
                         // X1***
-                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        std::cout << "4. case:" << std::endl;
+                        while ( ((tempPoint.x <= point.x) || (tempPoint.y >= point.y)) && !blackFound )
                         {
                             while (stepCount < longSide)
                             {
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
+                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                                 color = (image.pixel(tempPoint.x, tempPoint.y));
                                 if (color == Qt::black)
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x-((meretPen/4)/2));
-                                    serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                                    serial->setPointX(tempPoint.x-((this->meretPen/4)+1));
+                                    serial->setPointY(tempPoint.y+((this->meretPen/4)+1));
+                                    std::cout<<"BLACK FOUND!!!"<<std::endl;
                                     break;
                                 }
                                 tempPoint.y--;
@@ -347,14 +368,17 @@ void MazeWidget::checkWalls()
                 else if (prevpoint.y == point.y)
                 {
                     // X1*******X2
-                    while ( (tempPoint.x != point.x) || !blackFound )
+                    std::cout << "5. case:" << std::endl;
+                    while ( (tempPoint.x <= point.x)/* || !blackFound */)
                     {
+                        std::cout<<"stepCount: "<<stepCount<<std::endl;
+                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<", point.x: "<<point.x<<", point.y: "<<point.y<<std::endl;
                             color = (image.pixel(tempPoint.x, tempPoint.y));
                             if (color == Qt::black)
                             {
                                 blackFound = true;
-                                serial->setPointX(tempPoint.x-((meretPen/4)/2));
-
+                                serial->setPointX(tempPoint.x-((this->meretPen/4)+1));
+                                std::cout<<"BLACK FOUND!!!"<<std::endl;
                                 break;
                             }
                             tempPoint.x++;
@@ -374,16 +398,20 @@ void MazeWidget::checkWalls()
                         // ********X1
                         // *        *
                         // X2********
-                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        std::cout << "6. case:" << std::endl;
+                        while ( ((tempPoint.x >= point.x) || (tempPoint.y <= point.y)) && !blackFound )
                         {
                             while (stepCount < longSide)
                             {
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
+                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                                 color = (image.pixel(tempPoint.x, tempPoint.y));
                                 if (color == Qt::black)
                                 {
                                     blackFound = true;
-                                    //serial->setPointX(tempPoint.x+((meretPen/4)/2));
-                                    //serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                                    serial->setPointX(tempPoint.x+((this->meretPen/4)+1));
+                                    serial->setPointY(tempPoint.y-((this->meretPen/4)+1));
+                                    std::cout<<"BLACK FOUND!!!"<<std::endl;
                                     break;
                                 }
                                 tempPoint.x--;
@@ -400,16 +428,20 @@ void MazeWidget::checkWalls()
                         // *   *
                         // *   *
                         // X2***
-                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        std::cout << "7. case:" << std::endl;
+                        while ( ((tempPoint.x >= point.x) || (tempPoint.y <= point.y)) && !blackFound )
                         {
                             while (stepCount < longSide)
                             {
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
+                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                                 color = (image.pixel(tempPoint.x, tempPoint.y));
                                 if (color == Qt::black)
                                 {
                                     blackFound = true;
-                                    //serial->setPointX(tempPoint.x+((meretPen/4)/2));
-                                    //serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                                    serial->setPointX(tempPoint.x+((this->meretPen/4)+1));
+                                    serial->setPointY(tempPoint.y-((this->meretPen/4)+1));
+                                    std::cout<<"BLACK FOUND!!!"<<std::endl;
                                     break;
                                 }
                                 tempPoint.y++;
@@ -427,16 +459,20 @@ void MazeWidget::checkWalls()
                         // X2********
                         // *        *
                         // *********X1
-                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        std::cout << "8. case:" << std::endl;
+                        while ( ((tempPoint.x >= point.x) || (tempPoint.y >= point.y)) && !blackFound )
                         {
                             while (stepCount < longSide)
                             {
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
+                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                                 color = (image.pixel(tempPoint.x, tempPoint.y));
                                 if (color == Qt::black)
                                 {
                                     blackFound = true;
-                                    //serial->setPointX(tempPoint.x+((meretPen/4)/2));
-                                    //serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                                    serial->setPointX(tempPoint.x+((this->meretPen/4)+1));
+                                    serial->setPointY(tempPoint.y+((this->meretPen/4)+1));
+                                    std::cout<<"BLACK FOUND!!!"<<std::endl;
                                     break;
                                 }
                                 tempPoint.x--;
@@ -453,36 +489,47 @@ void MazeWidget::checkWalls()
                         // *   *
                         // *   *
                         // ***X1
-                        while ( ((tempPoint.x != point.x) && (tempPoint.y != point.y)) || !blackFound )
+                        std::cout << "9. case:" << std::endl;
+                         std::cout<<"stepCount: "<<stepCount<<std::endl;
+                        while ( ((tempPoint.x >= point.x) || (tempPoint.y >= point.y)) && !blackFound )
                         {
                             while (stepCount < longSide)
                             {
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
+                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                                 color = (image.pixel(tempPoint.x, tempPoint.y));
                                 if (color == Qt::black)
                                 {
                                     blackFound = true;
-                                    //serial->setPointX(tempPoint.x+((meretPen/4)/2));
-                                    //serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                                    serial->setPointX(tempPoint.x+((this->meretPen/4)+1));
+                                    serial->setPointY(tempPoint.y+((this->meretPen/4)+1));
+                                    std::cout<<"BLACK FOUND!!!"<<std::endl;
                                     break;
                                 }
                                 tempPoint.y--;
                                 stepCount += shortSide;
+                                std::cout<<"stepCount: "<<stepCount<<std::endl;
                             }
                             tempPoint.x--;
                             stepCount = stepCount - longSide;
+                            std::cout<<"stepCount: "<<stepCount<<std::endl;
                         }
                     }
                 }
                 else if (prevpoint.y == point.y)
                 {
                     // X2*******X1
-                    while ( (tempPoint.x != point.x) || !blackFound )
+                    std::cout << "10. case:" << std::endl;
+                    while ( (tempPoint.x >= point.x) && !blackFound )
                     {
+                        std::cout<<"stepCount: "<<stepCount<<std::endl;
+                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                             color = (image.pixel(tempPoint.x, tempPoint.y));
                             if (color == Qt::black)
                             {
                                 blackFound = true;
-                                serial->setPointX(tempPoint.x+((meretPen/4)/2));
+                                serial->setPointX(tempPoint.x+((this->meretPen/4)+1));
+                                std::cout<<"BLACK FOUND!!!"<<std::endl;
                                 break;
                             }
                             tempPoint.x--;
@@ -502,13 +549,17 @@ void MazeWidget::checkWalls()
                 // *
                 // *
                 // X2
-                while (  (tempPoint.y != point.y) || !blackFound )
+                std::cout << "11. case:" << std::endl;
+                while (  (tempPoint.y <= point.y) && !blackFound )
                 {
+                     std::cout<<"stepCount: "<<stepCount<<std::endl;
+                    std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                         color = (image.pixel(tempPoint.x, tempPoint.y));
                         if (color == Qt::black)
                         {
                             blackFound = true;
-                            serial->setPointY(tempPoint.y-((meretPen/4)/2));
+                            serial->setPointY(tempPoint.y-((this->meretPen/4)+1));
+                            std::cout<<"BLACK FOUND!!!"<<std::endl;
                             break;
                         }
                         tempPoint.y++;
@@ -521,13 +572,17 @@ void MazeWidget::checkWalls()
                 // *
                 // *
                 // X1
-                while (  (tempPoint.y != point.y) || !blackFound )
+                std::cout << "12. case:" << std::endl;
+                while (  (tempPoint.y >= point.y) && !blackFound )
                 {
+                    std::cout<<"stepCount: "<<stepCount<<std::endl;
+                    std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
                         color = (image.pixel(tempPoint.x, tempPoint.y));
                         if (color == Qt::black)
                         {
                             blackFound = true;
-                            serial->setPointY(tempPoint.y+((meretPen/4)/2));
+                            serial->setPointY(tempPoint.y+((this->meretPen/4)+1));
+                            std::cout<<"BLACK FOUND!!!"<<std::endl;
                             break;
                         }
                         tempPoint.y--;
@@ -582,20 +637,20 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     // if moving
     //if(point.x != prevpoint.x && point.y != prevpoint.y)
    // {
-        //keep drawing inside of the window
-        checkWindowEdges();
+    //keep drawing inside of the window
+    checkWindowEdges();
 
-        //Don!t walk trough walls
-        checkWalls();
+    //Don!t walk trough walls
+    checkWalls();
 
-        // Save changes
-        point.x=serial->getPointX();
-        point.y=serial->getPointY();
-        point.colorCounter=serial->getPointColorCount();
+    // Save changes
+    point.x=serial->getPointX();
+    point.y=serial->getPointY();
+    point.colorCounter=serial->getPointColorCount();
 
-        pointList.push_back(point);
+    pointList.push_back(point);
 
-        prevpoint = point;
+    prevpoint = point;
    // }
 
      /*color = (image.pixel(point.x, point.y));

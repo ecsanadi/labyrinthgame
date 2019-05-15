@@ -205,7 +205,6 @@ void SerialReader::setMyColor(int x)
     case 3: this->myColor =  Qt::yellow;     break;
     case 4: this->myColor =  Qt::red;        break;
     case 5: this->myColor =  Qt::green;      break;
-    case 6: this->myColor =  Qt::black;       break;
     case 7: this->myColor =  Qt::cyan;       break;
     case 8: this->myColor =  Qt::magenta;    break;
     case 9: this->myColor =  Qt::yellow;     break;
