@@ -1,2 +1,2 @@
 # labyrinthgame
-❮img src="img/labyrinth_path.png" width="100" ❯
+![](img/labyrinth_path.png)
