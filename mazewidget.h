@@ -64,6 +64,7 @@ private:
     QPixmap qPix;
     QColor color;
     void checkWalls();
+    bool checkBlackPix(int px, int py);
 
 
 public slots:
