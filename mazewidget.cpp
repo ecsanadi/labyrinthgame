@@ -267,295 +267,25 @@ void MazeWidget::checkWalls()
             std::cout << "Y is bigger. LongS: " << longSide << ", ShortS: "<< shortSide << std::endl;
         }
 
-        Points tempPoint = this->prevpoint;
+        Points tempPoint;
+        Points endPoint;
+        int stepBack;
 
         if (prevpoint.x < point.x)
         {
-                if (prevpoint.y < point.y)
-                {
-                    if( xSideBigger )
-                    {
-                        // X1********
-                        // *        *
-                        // ********X2
-                        std::cout << "1. case:" << std::endl;
-                        while ( ((tempPoint.x <= point.x) || (tempPoint.y <= point.y)) && !blackFound )
-                        {
-
-                            while (stepCount < longSide )
-                            {
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                                if (checkBlackPix(tempPoint.x, tempPoint.y))
-                                {
-                                    blackFound = true;
-                                    serial->setPointX(tempPoint.x - 1);
-                                    serial->setPointY(tempPoint.y - 1);
-                                    break;
-                                }
-
-                                tempPoint.x++;
-                                stepCount += shortSide;
-                            }
-                            tempPoint.y++;
-                            stepCount = stepCount - longSide;
-                        }
-
-                    }
-                    else if ( ySideBigger )
-                    {
-                        // X1***
-                        // *   *
-                        // *   *
-                        // *   *
-                        // ***X2
-                        std::cout << "2. case:" << std::endl;
-                        while ( ((tempPoint.x <= point.x) || (tempPoint.y <= point.y)) && !blackFound )
-                        {
-                            while (stepCount < longSide )
-                            {
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                                if (checkBlackPix(tempPoint.x, tempPoint.y))
-                                {
-                                    blackFound = true;
-                                    serial->setPointX(tempPoint.x - 1);
-                                    serial->setPointY(tempPoint.y - 1);
-                                    break;
-                                }
-                                tempPoint.y++;
-                                stepCount += shortSide;
-                            }
-                            tempPoint.x++;
-                            stepCount = stepCount - longSide;
-                        }
-                    }
-                }  // if (prevpoint.x < point.x)
-
-                else if (prevpoint.y > point.y)
-                {
-                    if( xSideBigger )
-                    {
-                        // ********X2
-                        // *        *
-                        // X1********
-                        std::cout << "3. case:" << std::endl;
-                        while ( ((tempPoint.x <= point.x) || (tempPoint.y >= point.y)) && !blackFound )
-                        {
-                            while (stepCount < longSide)
-                            {
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                                if (checkBlackPix(tempPoint.x, tempPoint.y))
-                                {
-                                    blackFound = true;
-                                    serial->setPointX(tempPoint.x - 1);
-                                    serial->setPointY(tempPoint.y + 1);
-                                    break;
-                                }
-                                tempPoint.x++;
-                                stepCount += shortSide;
-                            }
-                            tempPoint.y--;
-                            stepCount = stepCount - longSide;
-                        }
-                    }
-                    else if ( ySideBigger )
-                    {
-                        // ***X2
-                        // *   *
-                        // *   *
-                        // *   *
-                        // X1***
-                        std::cout << "4. case:" << std::endl;
-                        while ( ((tempPoint.x <= point.x) || (tempPoint.y >= point.y)) && !blackFound )
-                        {
-                            while (stepCount < longSide )
-                            {
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                                if (checkBlackPix(tempPoint.x, tempPoint.y))
-                                {
-                                    blackFound = true;
-                                    serial->setPointX(tempPoint.x - 1);
-                                    serial->setPointY(tempPoint.y + 1);
-                                    break;
-                                }
-                                tempPoint.y--;
-                                stepCount += shortSide;
-                            }
-                            tempPoint.x++;
-                            stepCount = stepCount - longSide;
-                        }
-                    }
-                }
-                else if (prevpoint.y == point.y)
-                {
-                    // X1*******X2
-                    std::cout << "5. case:" << std::endl;
-                    while ( (tempPoint.x <= point.x) && !blackFound )
-                    {
-                        //std::cout<<"stepCount: "<<stepCount<<std::endl;
-                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<", point.x: "<<point.x<<", point.y: "<<point.y<<std::endl;
-                        blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
-                        if (blackFound)
-                        {
-                            serial->setPointX(tempPoint.x - 1);
-                            break;
-                        }
-                        tempPoint.x++;
-                    }
-                }
-                else
-                {
-                    std::cout<<"should not be here"<<std::endl;
-                }
+            tempPoint = this->prevpoint;
+            endPoint  = this->point;
+            stepBack = -1;
         }
-        else if (prevpoint.x > point.x)
+        else if(prevpoint.x > point.x)
         {
-                if (prevpoint.y < point.y)
-                {
-                    if( xSideBigger )
-                    {
-                        // ********X1
-                        // *        *
-                        // X2********
-                        std::cout << "6. case:" << std::endl;
-                        while ( ((tempPoint.x >= point.x) || (tempPoint.y <= point.y)) && !blackFound )
-                        {
-                            while (stepCount < longSide )
-                            {
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                                if (checkBlackPix(tempPoint.x, tempPoint.y))
-                                {
-                                    blackFound = true;
-                                    serial->setPointX(tempPoint.x + 1);
-                                    serial->setPointY(tempPoint.y - 1);
-                                    break;
-                                }
-                                tempPoint.x--;
-                                stepCount += shortSide;
-                            }
-                            tempPoint.y++;
-                            stepCount = stepCount - longSide;
-                        }
-                    }
-                    else if ( ySideBigger )
-                    {
-                        // ***X1
-                        // *   *
-                        // *   *
-                        // *   *
-                        // X2***
-                        std::cout << "7. case:" << std::endl;
-                        while ( ((tempPoint.x >= point.x) || (tempPoint.y <= point.y)) && !blackFound )
-                        {
-                            while (stepCount < longSide )
-                            {
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                                if (checkBlackPix(tempPoint.x, tempPoint.y))
-                                {
-                                    blackFound = true;
-                                    serial->setPointX(tempPoint.x + 1);
-                                    serial->setPointY(tempPoint.y - 1);
-                                    break;
-                                }
-                                tempPoint.y++;
-                                stepCount += shortSide;
-                            }
-                            tempPoint.x--;
-                            stepCount = stepCount - longSide;
-                        }
-                    }
-                }
-                else if (prevpoint.y > point.y)
-                {
-                    if( xSideBigger )
-                    {
-                        // X2********
-                        // *        *
-                        // *********X1
-                        std::cout << "8. case:" << std::endl;
-                        while ( ((tempPoint.x >= point.x) || (tempPoint.y >= point.y)) && !blackFound )
-                        {
-                            while (stepCount < longSide )
-                            {
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                                color = (image.pixel(tempPoint.x, tempPoint.y));
-                                if (checkBlackPix(tempPoint.x, tempPoint.y))
-                                {
-                                    blackFound = true;
-                                    serial->setPointX(tempPoint.x + 1);
-                                    serial->setPointY(tempPoint.y + 1);
-                                    break;
-                                }
-                                tempPoint.x--;
-                                stepCount += shortSide;
-                            }
-                            tempPoint.y--;
-                            stepCount = stepCount - longSide;
-                        }
-                    }
-                    else if ( ySideBigger )
-                    {
-                        // X2***
-                        // *   *
-                        // *   *
-                        // *   *
-                        // ***X1
-                        std::cout << "9. case:" << std::endl;
-                         std::cout<<"stepCount: "<<stepCount<<std::endl;
-                        while ( ((tempPoint.x >= point.x) || (tempPoint.y >= point.y)) && !blackFound )
-                        {
-                            while (stepCount < longSide )
-                            {
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                                if (checkBlackPix(tempPoint.x, tempPoint.y))
-                                {
-                                    blackFound = true;
-                                    serial->setPointX(tempPoint.x + 1);
-                                    serial->setPointY(tempPoint.y + 1);
-                                    break;
-                                }
-                                tempPoint.y--;
-                                stepCount += shortSide;
-                                std::cout<<"stepCount: "<<stepCount<<std::endl;
-                            }
-                            tempPoint.x--;
-                            stepCount = stepCount - longSide;
-                            std::cout<<"stepCount: "<<stepCount<<std::endl;
-                        }
-                    }
-                }
-                else if (prevpoint.y == point.y)
-                {
-                    // X2*******X1
-                    std::cout << "10. case:" << std::endl;
-                    while ( (tempPoint.x >= point.x) && !blackFound )
-                    {
-                        std::cout<<"stepCount: "<<stepCount<<std::endl;
-                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                        blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
-                        if (blackFound)
-                        {
-                            serial->setPointX(tempPoint.x + 1);
-                            break;
-
-                        }
-                            tempPoint.x--;
-                    }
-                }
-                else
-                {
-                    std::cout<<"should not be here"<<std::endl;
-                }
+            tempPoint = this->point;
+            endPoint  = this->prevpoint;
+            stepBack = 1;
         }
         else if(prevpoint.x == point.x)
         {
+
             if (prevpoint.y < point.y)
             {
                 // X1
@@ -563,20 +293,9 @@ void MazeWidget::checkWalls()
                 // *
                 // *
                 // X2
-                std::cout << "11. case:" << std::endl;
-                while (  (tempPoint.y <= point.y) && !blackFound )
-                {
-                     std::cout<<"stepCount: "<<stepCount<<std::endl;
-                    std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                    blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
-                    if (blackFound)
-                    {
+                tempPoint = this->prevpoint;
+                endPoint  = this->point;
 
-                        serial->setPointY(tempPoint.y - 1);
-                        break;
-                    }
-                    tempPoint.y++;
-                }
             }
             else if (prevpoint.y > point.y)
             {
@@ -585,23 +304,170 @@ void MazeWidget::checkWalls()
                 // *
                 // *
                 // X1
+                tempPoint = this->point;
+                endPoint  = this->prevpoint;
                 std::cout << "12. case:" << std::endl;
-                while (  (tempPoint.y >= point.y) && !blackFound )
-                {
-                    std::cout<<"stepCount: "<<stepCount<<std::endl;
-                    std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
-                     blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
-                    if (blackFound)
-                    {
 
-                        serial->setPointY(tempPoint.y + 1);
-                        break;
-                    }
-                    tempPoint.y--;
+            }
+            std::cout << "11. case:" << std::endl;
+            while (  (tempPoint.y <= endPoint.y) && !blackFound )
+            {
+                 std::cout<<"stepCount: "<<stepCount<<std::endl;
+                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
+                blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
+                if (blackFound)
+                {
+
+                    serial->setPointY(tempPoint.y - 1);
+                    break;
                 }
+                tempPoint.y++;
             }
 
         }
+
+        if (prevpoint.y < endPoint.y)
+        {
+            if( xSideBigger )
+            {
+                // X1********
+                // *        *
+                // ********X2
+                std::cout << "1. case:" << std::endl;
+                while ( ((tempPoint.x <= endPoint.x) || (tempPoint.y <= endPoint.y)) && !blackFound )
+                {
+
+                    while (stepCount < longSide )
+                    {
+                        std::cout<<"stepCount: "<<stepCount<<std::endl;
+                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
+                        if (checkBlackPix(tempPoint.x, tempPoint.y))
+                        {
+                            blackFound = true;
+                            serial->setPointX(tempPoint.x + stepBack);
+                            serial->setPointY(tempPoint.y + stepBack);
+                            break;
+                        }
+
+                        tempPoint.x++;
+                        stepCount += shortSide;
+                    }
+                    tempPoint.y++;
+                    stepCount = stepCount - longSide;
+                }
+
+            }
+            else if ( ySideBigger )
+            {
+                // X1***
+                // *   *
+                // *   *
+                // *   *
+                // ***X2
+                std::cout << "2. case:" << std::endl;
+                while ( ((tempPoint.x <= endPoint.x) || (tempPoint.y <= endPoint.y)) && !blackFound )
+                {
+                    while (stepCount < longSide )
+                    {
+                        std::cout<<"stepCount: "<<stepCount<<std::endl;
+                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
+                        if (checkBlackPix(tempPoint.x, tempPoint.y))
+                        {
+                            blackFound = true;
+                            serial->setPointX(tempPoint.x + stepBack);
+                            serial->setPointY(tempPoint.y + stepBack);
+                            break;
+                        }
+                        tempPoint.y++;
+                        stepCount += shortSide;
+                    }
+                    tempPoint.x++;
+                    stepCount = stepCount - longSide;
+                }
+            }
+        }  //  if (prevpoint.y < point.y)
+
+        else if (prevpoint.y > endPoint.y)
+        {
+            if( xSideBigger )
+            {
+                // ********X2
+                // *        *
+                // X1********
+                std::cout << "3. case:" << std::endl;
+                while ( ((tempPoint.x <= endPoint.x) || (tempPoint.y >= endPoint.y)) && !blackFound )
+                {
+                    while (stepCount < longSide)
+                    {
+                        std::cout<<"stepCount: "<<stepCount<<std::endl;
+                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
+                        if (checkBlackPix(tempPoint.x, tempPoint.y))
+                        {
+                            blackFound = true;
+                            serial->setPointX(tempPoint.x + stepBack);
+                            serial->setPointY(tempPoint.y - stepBack);
+                            break;
+                        }
+                        tempPoint.x++;
+                        stepCount += shortSide;
+                    }
+                    tempPoint.y--;
+                    stepCount = stepCount - longSide;
+                }
+            }
+            else if ( ySideBigger )
+            {
+                // ***X2
+                // *   *
+                // *   *
+                // *   *
+                // X1***
+                std::cout << "4. case:" << std::endl;
+                while ( ((tempPoint.x <= endPoint.x) || (tempPoint.y >= endPoint.y)) && !blackFound )
+                {
+                    while (stepCount < longSide )
+                    {
+                        std::cout<<"stepCount: "<<stepCount<<std::endl;
+                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
+                        if (checkBlackPix(tempPoint.x, tempPoint.y))
+                        {
+                            blackFound = true;
+                            serial->setPointX(tempPoint.x + stepBack);
+                            serial->setPointY(tempPoint.y - stepBack);
+                            break;
+                        }
+                        tempPoint.y--;
+                        stepCount += shortSide;
+                    }
+                    tempPoint.x++;
+                    stepCount = stepCount - longSide;
+                }
+            }
+        }
+        else if (prevpoint.y == endPoint.y)
+        {
+            // X1*******X2
+            std::cout << "5. case:" << std::endl;
+            while ( (tempPoint.x <= endPoint.x) && !blackFound )
+            {
+                //std::cout<<"stepCount: "<<stepCount<<std::endl;
+                std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<", point.x: "<<endPoint.x<<", point.y: "<<endPoint.y<<std::endl;
+                blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
+                if (blackFound)
+                {
+                    serial->setPointX(tempPoint.x + stepBack);
+                    break;
+                }
+                tempPoint.x++;
+            }
+        }
+        else
+        {
+            std::cout<<"should not be here"<<std::endl;
+        }
+
+
+
 
     }
 
