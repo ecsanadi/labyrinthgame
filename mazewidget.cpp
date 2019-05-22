@@ -33,12 +33,11 @@ void MazeWidget::setSerialReader(SerialReader* pserial)
 void MazeWidget::getEndPixels()
 {
 
-    endLineBeginY = ((meretY - 2) * meretPen) - (meretPen / 2);
-    endLineEndY = ((meretY - 2) * meretPen) + (meretPen / 2);
-    endLineBeginX = ((meretX - 1) * meretPen) + (meretPen / 2);
+    endLineBeginY = ((sizeY - 2) * sizePen) - (sizePen / 2);
+    endLineEndY = ((sizeY - 2) * sizePen) + (sizePen / 2);
+    endLineBeginX = ((sizeX - 1) * sizePen) + (sizePen / 2);
 
     qPix = QPixmap::grabWidget(this);
-   // qPix = QWidget::grab(this);
     image = (qPix.toImage());
 }
 
@@ -47,62 +46,60 @@ void MazeWidget::setMaze(int size)
     srand(time(0));
     switch (size) {
     case 1:
-        this->meretY=7;
-        this->meretX=9;
-        this->meretPen=100;
+        this->sizeY=7;
+        this->sizeX=9;
+        this->sizePen=100;
         this->iniPoint.x=10;
         this->iniPoint.y=110;
 
         break;
     case 2:
-        this->meretY=15;
-        this->meretX=19;
-        this->meretPen=47;
+        this->sizeY=15;
+        this->sizeX=19;
+        this->sizePen=47;
         this->iniPoint.x=5;
         this->iniPoint.y=50;
 
         break;
     case 3:
-        this->meretY=25;
-        this->meretX=33;
-        this->meretPen=27;
+        this->sizeY=25;
+        this->sizeX=33;
+        this->sizePen=27;
         this->iniPoint.x=2;
         this->iniPoint.y=30;
-        //this->iniPoint.x=860;
-        //this->iniPoint.y=625;
 
         break;
     case 4:
-        this->meretY=59;
-        this->meretX=75;
-        this->meretPen=12;
+        this->sizeY=59;
+        this->sizeX=75;
+        this->sizePen=12;
         this->iniPoint.x=2;
         this->iniPoint.y=15;
 
         break;
     case 5:
-        this->meretY=117;
-        this->meretX=151;
-        this->meretPen=6;
+        this->sizeY=117;
+        this->sizeX=151;
+        this->sizePen=6;
         this->iniPoint.x=1;
         this->iniPoint.y=7;
 
         break;
     default:
-        this->meretY=25;
-        this->meretX=33;
-        this->meretPen=27;
+        this->sizeY=25;
+        this->sizeX=33;
+        this->sizePen=27;
         this->iniPoint.x=2;
         this->iniPoint.y=30;
         break;
     }
 
-    ures(p);
-    labirintus(p, 1, 1);
+    empty(p);
+    labyrintGenerator(p, 1, 1);
 
     /* bejarat es kijarat */
-    p[1][0] = Jarat;
-    p[this->meretY - 2][this->meretX - 1] = Jarat;
+    p[1][0] = Path;
+    p[this->sizeY - 2][this->sizeX - 1] = Path;
 
     this->prevpoint = this->iniPoint;
 
@@ -112,24 +109,24 @@ void MazeWidget::setMaze(int size)
 }
 
 
-void MazeWidget::ures(Palya p) {
-    for (int y = 0; y < MERETY; ++y)
-        for (int x = 0; x < MERETX; ++x)
-            p[y][x] = Jarat;
+void MazeWidget::empty(Field p) {
+    for (int y = 0; y < sizeY; ++y)
+        for (int x = 0; x < sizeX; ++x)
+            p[y][x] = Path;
 
 
-    for (int y = 0; y < this->meretY; ++y)
-        for (int x = 0; x < this->meretX; ++x)
-            p[y][x] = Fal;
+    for (int y = 0; y < this->sizeY; ++y)
+        for (int x = 0; x < this->sizeX; ++x)
+            p[y][x] = Wall;
 }
 
 /* ez maga a generalo fuggveny */
-void MazeWidget::labirintus(Palya p, int x, int y) {
+void MazeWidget::labyrintGenerator(Field p, int x, int y) {
     typedef enum { fel, le, jobbra, balra } Irany;
     Irany iranyok[4] = {fel, le, jobbra, balra};
 
     /* erre a pontra hivtak minket, ide lerakunk egy darabka jaratot. */
-    p[y][x] = Jarat;
+    p[y][x] = Path;
 
     /* a tomb keverese */
     for (int i = 3; i > 0; --i) {   /* mindegyiket... */
@@ -143,27 +140,27 @@ void MazeWidget::labirintus(Palya p, int x, int y) {
     for (int i = 0; i < 4; ++i)
         switch (iranyok[i]) {
         case fel:
-            if (y >= 2 && p[y - 2][x] != Jarat) {
-                p[y - 1][x] = Jarat;      /* elinditjuk arrafele a jaratot */
-                labirintus(p, x, y - 2); /* es rekurzive megyunk tovabb */
+            if (y >= 2 && p[y - 2][x] != Path) {
+                p[y - 1][x] = Path;      /* elinditjuk arrafele a jaratot */
+                labyrintGenerator(p, x, y - 2); /* es rekurzive megyunk tovabb */
             }
             break;
         case balra:
-            if (x >= 2 && p[y][x - 2] != Jarat) {
-                p[y][x - 1] = Jarat;
-                labirintus(p, x - 2, y);
+            if (x >= 2 && p[y][x - 2] != Path) {
+                p[y][x - 1] = Path;
+                labyrintGenerator(p, x - 2, y);
             }
             break;
         case le:
-            if (y < ((this->meretY) - 2) && p[y + 2][x] != Jarat) {
-                p[y + 1][x] = Jarat;
-                labirintus(p, x, y + 2);
+            if (y < ((this->sizeY) - 2) && p[y + 2][x] != Path) {
+                p[y + 1][x] = Path;
+                labyrintGenerator(p, x, y + 2);
             }
             break;
         case jobbra:
-            if (x < ((this->meretX) - 2) && p[y][x + 2] != Jarat) {
-                p[y][x + 1] = Jarat;
-                labirintus(p, x + 2, y);
+            if (x < ((this->sizeX) - 2) && p[y][x + 2] != Path) {
+                p[y][x + 1] = Path;
+                labyrintGenerator(p, x + 2, y);
             }
             break;
         }
@@ -217,10 +214,10 @@ bool MazeWidget::checkBlackPix(int px, int py)
         return true;
     }
 
-    int yRangeStart = 0 - ((meretPen / 9)+1);
-    int yRangeEnd = 0 + ((meretPen / 9)+1);
-    int XRangeStart = yRangeStart;
-    int XRangeEnd = yRangeEnd;
+    int yRangeStart = 0 - ((sizePen / 10)+1);
+    int yRangeEnd = 0 + ((sizePen / 3)+1);
+    int XRangeStart = 0 - ((sizePen / 10)+1);
+    int XRangeEnd = 0 + ((sizePen / 10)+1);
     for (; yRangeStart<=yRangeEnd;yRangeStart++)
     {
         for (; XRangeStart<=XRangeEnd;XRangeStart++)
@@ -268,7 +265,7 @@ void MazeWidget::checkWalls()
             shortSide = abs(prevpoint.y - point.y);
             std::cout << "X is bigger. LongS: " << longSide << ", ShortS: "<< shortSide << std::endl;
         }
-        if(ySideBigger)
+        else if(ySideBigger)
         {
             shortSide = abs(prevpoint.x - point.x);
             longSide  = abs(prevpoint.y - point.y);
@@ -297,8 +294,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x - ((this->meretPen / 8) +1));
-                                    serial->setPointY(tempPoint.y - ((this->meretPen / 8) +1));
+                                    serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
+                                    serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
                                     break;
                                 }
 
@@ -327,8 +324,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x - ((this->meretPen / 8) +1));
-                                    serial->setPointY(tempPoint.y - ((this->meretPen / 8) +1));
+                                    serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
+                                    serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
                                     break;
                                 }
                                 tempPoint.y++;
@@ -357,8 +354,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x - ((this->meretPen / 8) +1));
-                                    serial->setPointY(tempPoint.y + ((this->meretPen / 8) +1));
+                                    serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
+                                    serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
                                     break;
                                 }
                                 tempPoint.x++;
@@ -385,8 +382,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x - ((this->meretPen / 8) +1));
-                                    serial->setPointY(tempPoint.y + ((this->meretPen / 8) +1));
+                                    serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
+                                    serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
                                     break;
                                 }
                                 tempPoint.y--;
@@ -408,7 +405,7 @@ void MazeWidget::checkWalls()
                         blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
                         if (blackFound)
                         {
-                            serial->setPointX(tempPoint.x - ((this->meretPen / 8) +1));
+                            serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
                             break;
                         }
                         tempPoint.x++;
@@ -438,8 +435,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x + ((this->meretPen / 8) +1));
-                                    serial->setPointY(tempPoint.y - ((this->meretPen / 8) +1));
+                                    serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
+                                    serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
                                     break;
                                 }
                                 tempPoint.x--;
@@ -466,8 +463,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x + ((this->meretPen / 8) +1));
-                                    serial->setPointY(tempPoint.y - ((this->meretPen / 8) +1));
+                                    serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
+                                    serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
                                     break;
                                 }
                                 tempPoint.y++;
@@ -496,8 +493,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x + ((this->meretPen / 8) +1));
-                                    serial->setPointY(tempPoint.y + ((this->meretPen / 8) +1));
+                                    serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
+                                    serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
                                     break;
                                 }
                                 tempPoint.x--;
@@ -525,8 +522,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x + ((this->meretPen / 8) +1));
-                                    serial->setPointY(tempPoint.y + ((this->meretPen / 8) +1));
+                                    serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
+                                    serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
                                     break;
                                 }
                                 tempPoint.y--;
@@ -550,7 +547,7 @@ void MazeWidget::checkWalls()
                         blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
                         if (blackFound)
                         {
-                            serial->setPointX(tempPoint.x + ((this->meretPen / 8) +1));
+                            serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
                             break;
 
                         }
@@ -580,7 +577,7 @@ void MazeWidget::checkWalls()
                     if (blackFound)
                     {
 
-                        serial->setPointY(tempPoint.y - ((this->meretPen / 8) +1));
+                        serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
                         break;
                     }
                     tempPoint.y++;
@@ -602,7 +599,7 @@ void MazeWidget::checkWalls()
                     if (blackFound)
                     {
 
-                        serial->setPointY(tempPoint.y + ((this->meretPen / 8) +1));
+                        serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
                         break;
                     }
                     tempPoint.y--;
@@ -610,14 +607,7 @@ void MazeWidget::checkWalls()
             }
 
         }
-        /*if (blackFound)
-        {
 
-            point.x=serial->getPointX();
-            point.y=serial->getPointY();
-            point.colorCounter=serial->getPointColorCount();
-            blackFound = false;
-        }*/
     }
 
 
@@ -630,15 +620,15 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     painter.save();
 
     // draw the labyrinth
-    for (int y = 0; y < this->meretY; ++y) {
-        for (int x = 0; x < this->meretX; ++x){
-            if (p[y][x] == Fal){
-                painter.setPen(QPen(Qt::black, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
-                painter.drawPoint(x*this->meretPen,y*this->meretPen);
+    for (int y = 0; y < this->sizeY; ++y) {
+        for (int x = 0; x < this->sizeX; ++x){
+            if (p[y][x] == Wall){
+                painter.setPen(QPen(Qt::black, this->sizePen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+                painter.drawPoint(x*this->sizePen,y*this->sizePen);
             }
-            if (p[y][x] == Jarat){
-                painter.setPen(QPen(Qt::white, this->meretPen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
-                painter.drawPoint(x*this->meretPen,y*this->meretPen);
+            if (p[y][x] == Path){
+                painter.setPen(QPen(Qt::white, this->sizePen, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+                painter.drawPoint(x*this->sizePen,y*this->sizePen);
             }
         }
     }
@@ -687,7 +677,7 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
      }*/
 
     //draw initial point
-    int w = this->meretPen / 4;
+    int w = this->sizePen / 4;
     painter.setPen(QPen(static_cast<QColor>(serial->getMyColor()), w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawPoint(this->iniPoint.x,this->iniPoint.y);
 

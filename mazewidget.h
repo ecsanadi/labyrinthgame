@@ -7,11 +7,12 @@
 #include "serialreader.h"
 #include <QImage>
 #include <QColor>
-#define MERETX 153
-#define MERETY 119
 
-typedef enum Cella { Jarat = 0, Fal = 1 } Cella;
-typedef Cella Palya[MERETY][MERETX];
+#define SIZEX 153
+#define SIZEY 119
+
+typedef enum Cell { Path = 0, Wall = 1 } Cell;
+typedef Cell Field[SIZEY][SIZEX];
 
 class MazeWidget : public QWidget
 {
@@ -25,8 +26,6 @@ public:
         shape = Line;
         iniPoint.x=2;
         iniPoint.y=20;
-        //iniPoint.x=860;
-        //iniPoint.y=625;
         pointList.push_back(iniPoint);
 
     }
@@ -41,12 +40,12 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:   
-    Palya p;
-    void ures(Palya p);
-    void labirintus(Palya p, int x, int y);
-    int meretX = 33;
-    int meretY = 25;
-    int meretPen = 27;
+    Field p;
+    void empty(Field p);
+    void labyrintGenerator(Field p, int x, int y);
+    int sizeX = 33;
+    int sizeY = 25;
+    int sizePen = 27;
     Shape shape;
     SerialReader* serial;
     Points point;
