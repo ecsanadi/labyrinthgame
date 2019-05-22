@@ -209,28 +209,23 @@ bool MazeWidget::checkBlackPix(int px, int py)
     color = (image.pixel(px, py));
     if (color == Qt::black)
     {
-
-        std::cout<<"BLACK FOUND!!!"<<std::endl;
+        // BLACK px found
         return true;
     }
 
-    int yRangeStart = 0 - ((sizePen / 10)+1);
-    int yRangeEnd = 0 + ((sizePen / 3)+1);
-    int XRangeStart = 0 - ((sizePen / 10)+1);
+    int yRangeEnd = 0 + ((sizePen / 10)+1);
     int XRangeEnd = 0 + ((sizePen / 10)+1);
-    for (; yRangeStart<=yRangeEnd;yRangeStart++)
+
+    for (int yRangeStart = 0 - ((sizePen / 10)+1); yRangeStart<yRangeEnd; yRangeStart++)
     {
-        for (; XRangeStart<=XRangeEnd;XRangeStart++)
+        for (int XRangeStart = 0 - ((sizePen / 10)+1); XRangeStart<XRangeEnd; XRangeStart++)
         {
-            std::cout<<"XRangeStart: "<<XRangeStart<<", yRangeStart: "<<yRangeStart<<std::endl;
-            std::cout<<"px+XRangeStart: "<<px+XRangeStart<<", py+yRangeStart: "<<py+yRangeStart<<std::endl;
             if (px+XRangeStart >= 0 && py+yRangeStart >= 0)
             {
-
                 color = (image.pixel(px+XRangeStart, py+yRangeStart));
                 if (color == Qt::black)
                 {
-                    std::cout<<"BLACK FOUND!!!"<<std::endl;
+                    // BLACK px found
                     return true;
                 }
             }
@@ -294,8 +289,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
-                                    serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
+                                    serial->setPointX(tempPoint.x - 1);
+                                    serial->setPointY(tempPoint.y - 1);
                                     break;
                                 }
 
@@ -324,8 +319,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
-                                    serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
+                                    serial->setPointX(tempPoint.x - 1);
+                                    serial->setPointY(tempPoint.y - 1);
                                     break;
                                 }
                                 tempPoint.y++;
@@ -354,8 +349,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
-                                    serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
+                                    serial->setPointX(tempPoint.x - 1);
+                                    serial->setPointY(tempPoint.y + 1);
                                     break;
                                 }
                                 tempPoint.x++;
@@ -382,8 +377,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
-                                    serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
+                                    serial->setPointX(tempPoint.x - 1);
+                                    serial->setPointY(tempPoint.y + 1);
                                     break;
                                 }
                                 tempPoint.y--;
@@ -405,7 +400,7 @@ void MazeWidget::checkWalls()
                         blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
                         if (blackFound)
                         {
-                            serial->setPointX(tempPoint.x - ((this->sizePen / 8) +1));
+                            serial->setPointX(tempPoint.x - 1);
                             break;
                         }
                         tempPoint.x++;
@@ -435,8 +430,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
-                                    serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
+                                    serial->setPointX(tempPoint.x + 1);
+                                    serial->setPointY(tempPoint.y - 1);
                                     break;
                                 }
                                 tempPoint.x--;
@@ -463,8 +458,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
-                                    serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
+                                    serial->setPointX(tempPoint.x + 1);
+                                    serial->setPointY(tempPoint.y - 1);
                                     break;
                                 }
                                 tempPoint.y++;
@@ -493,8 +488,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
-                                    serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
+                                    serial->setPointX(tempPoint.x + 1);
+                                    serial->setPointY(tempPoint.y + 1);
                                     break;
                                 }
                                 tempPoint.x--;
@@ -522,8 +517,8 @@ void MazeWidget::checkWalls()
                                 if (checkBlackPix(tempPoint.x, tempPoint.y))
                                 {
                                     blackFound = true;
-                                    serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
-                                    serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
+                                    serial->setPointX(tempPoint.x + 1);
+                                    serial->setPointY(tempPoint.y + 1);
                                     break;
                                 }
                                 tempPoint.y--;
@@ -547,7 +542,7 @@ void MazeWidget::checkWalls()
                         blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
                         if (blackFound)
                         {
-                            serial->setPointX(tempPoint.x + ((this->sizePen / 8) +1));
+                            serial->setPointX(tempPoint.x + 1);
                             break;
 
                         }
@@ -577,7 +572,7 @@ void MazeWidget::checkWalls()
                     if (blackFound)
                     {
 
-                        serial->setPointY(tempPoint.y - ((this->sizePen / 8) +1));
+                        serial->setPointY(tempPoint.y - 1);
                         break;
                     }
                     tempPoint.y++;
@@ -599,7 +594,7 @@ void MazeWidget::checkWalls()
                     if (blackFound)
                     {
 
-                        serial->setPointY(tempPoint.y + ((this->sizePen / 8) +1));
+                        serial->setPointY(tempPoint.y + 1);
                         break;
                     }
                     tempPoint.y--;
