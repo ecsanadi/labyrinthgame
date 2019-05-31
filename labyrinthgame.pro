@@ -4,6 +4,16 @@
 #
 #-------------------------------------------------
 
+
+#INCLUDEPATH += /usr/include/gtest
+#INCLUDEPATH += /usr/include/gmock
+#
+#
+#LIBS += -lgtest -L<path_to_gtest_lib>
+#LIBS += -lgmock -L<path_to_gmock_lib>
+
+
+
 QT       += core gui widgets serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

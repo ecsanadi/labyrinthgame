@@ -35,6 +35,8 @@ public:
     enum Shape { Line/*, Points, Polyline, Polygon, Rect, RoundedRect, Ellipse, Arc,
                  Chord, Pie, Path, Text, Pixmap */};
     void setSerialReader(SerialReader *);
+    void checkWalls(Points tempPoint, Points endPoint);
+    void getImage(QPixmap pQPix);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -54,6 +56,8 @@ private:
     void checkWindowEdges();
     void restoreRotaryPosition();
     void getEndPixels();
+    //void getImage(QPixmap pQPix);
+    void getImage();
     Points endpoints;
     Points prevpoint;
     int endLineBeginX;
@@ -62,7 +66,7 @@ private:
     QImage image;
     QPixmap qPix;
     QColor color;
-    void checkWalls();
+    //void checkWalls(Points tempPoint, Points endPoint);
     bool checkBlackPix(int px, int py);
 
 

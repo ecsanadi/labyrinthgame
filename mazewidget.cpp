@@ -32,14 +32,26 @@ void MazeWidget::setSerialReader(SerialReader* pserial)
 
 void MazeWidget::getEndPixels()
 {
-
     endLineBeginY = ((sizeY - 2) * sizePen) - (sizePen / 2);
     endLineEndY = ((sizeY - 2) * sizePen) + (sizePen / 2);
     endLineBeginX = ((sizeX - 1) * sizePen) + (sizePen / 2);
-
-    qPix = QPixmap::grabWidget(this);
-    image = (qPix.toImage());
 }
+
+void  MazeWidget::getImage(QPixmap pQPix)
+{
+
+        image = (pQPix.toImage());
+
+}
+
+void  MazeWidget::getImage()
+{
+
+        qPix = QPixmap::grabWidget(this);
+        image = (qPix.toImage());
+
+}
+
 
 void MazeWidget::setMaze(int size)
 {
@@ -105,9 +117,10 @@ void MazeWidget::setMaze(int size)
 
     getEndPixels();    
 
+    getImage();
+
     update();
 }
-
 
 void MazeWidget::empty(Field p) {
     for (int y = 0; y < sizeY; ++y)
@@ -239,14 +252,14 @@ bool MazeWidget::checkBlackPix(int px, int py)
     return false;
 }
 
-void MazeWidget::checkWalls()
+void MazeWidget::checkWalls(Points tempPoint, Points endPoint)
 {
-    std::cout<<"prevpoint.x: "<<prevpoint.x<<", prevpoint.y: "<<prevpoint.y<<", point.x: "<<point.x<<", point.y: "<<point.y<<std::endl;
-    if ((prevpoint.x != 0 && prevpoint.y != 0) && (prevpoint.x != point.x || prevpoint.y != point.y))
+    std::cout<<"prevpoint.x: "<<tempPoint.x<<", prevpoint.y: "<<tempPoint.y<<", point.x: "<<endPoint.x<<", point.y: "<<endPoint.y<<std::endl;
+    if ((tempPoint.x != 0 && tempPoint.y != 0) && (tempPoint.x != endPoint.x || tempPoint.y != endPoint.y))
     {
         std::cout<<"INSIDE"<<std::endl;
-        bool xSideBigger = abs(point.x - prevpoint.x) >= abs(point.y - prevpoint.y);
-        bool ySideBigger = abs(point.x - prevpoint.x) < abs(point.y - prevpoint.y);
+        bool xSideBigger = abs(endPoint.x - tempPoint.x) >= abs(endPoint.y - tempPoint.y);
+        bool ySideBigger = abs(endPoint.x - tempPoint.x) < abs(endPoint.y - tempPoint.y);
 
         int stepCount = 0;
         int longSide = 0;
@@ -256,22 +269,20 @@ void MazeWidget::checkWalls()
 
         if(xSideBigger)
         {
-            longSide  = abs(prevpoint.x - point.x);
-            shortSide = abs(prevpoint.y - point.y);
+            longSide  = abs(tempPoint.x - endPoint.x);
+            shortSide = abs(tempPoint.y - endPoint.y);
             std::cout << "X is bigger. LongS: " << longSide << ", ShortS: "<< shortSide << std::endl;
         }
         else if(ySideBigger)
         {
-            shortSide = abs(prevpoint.x - point.x);
-            longSide  = abs(prevpoint.y - point.y);
+            shortSide = abs(tempPoint.x - endPoint.x);
+            longSide  = abs(tempPoint.y - endPoint.y);
             std::cout << "Y is bigger. LongS: " << longSide << ", ShortS: "<< shortSide << std::endl;
         }
 
-        Points tempPoint = this->prevpoint;
-
-        if (prevpoint.x < point.x)
+        if (tempPoint.x < endPoint.x)
         {
-                if (prevpoint.y < point.y)
+                if (tempPoint.y < endPoint.y)
                 {
                     if( xSideBigger )
                     {
@@ -279,7 +290,7 @@ void MazeWidget::checkWalls()
                         // *        *
                         // ********X2
                         std::cout << "1. case:" << std::endl;
-                        while ( ((tempPoint.x <= point.x) || (tempPoint.y <= point.y)) && !blackFound )
+                        while ( ((tempPoint.x <= endPoint.x) || (tempPoint.y <= endPoint.y)) && !blackFound )
                         {
 
                             while (stepCount < longSide )
@@ -310,7 +321,7 @@ void MazeWidget::checkWalls()
                         // *   *
                         // ***X2
                         std::cout << "2. case:" << std::endl;
-                        while ( ((tempPoint.x <= point.x) || (tempPoint.y <= point.y)) && !blackFound )
+                        while ( ((tempPoint.x <= endPoint.x) || (tempPoint.y <= endPoint.y)) && !blackFound )
                         {
                             while (stepCount < longSide )
                             {
@@ -332,7 +343,7 @@ void MazeWidget::checkWalls()
                     }
                 }  // if (prevpoint.x < point.x)
 
-                else if (prevpoint.y > point.y)
+                else if (tempPoint.y > endPoint.y)
                 {
                     if( xSideBigger )
                     {
@@ -340,7 +351,7 @@ void MazeWidget::checkWalls()
                         // *        *
                         // X1********
                         std::cout << "3. case:" << std::endl;
-                        while ( ((tempPoint.x <= point.x) || (tempPoint.y >= point.y)) && !blackFound )
+                        while ( ((tempPoint.x <= endPoint.x) || (tempPoint.y >= endPoint.y)) && !blackFound )
                         {
                             while (stepCount < longSide)
                             {
@@ -368,7 +379,7 @@ void MazeWidget::checkWalls()
                         // *   *
                         // X1***
                         std::cout << "4. case:" << std::endl;
-                        while ( ((tempPoint.x <= point.x) || (tempPoint.y >= point.y)) && !blackFound )
+                        while ( ((tempPoint.x <= endPoint.x) || (tempPoint.y >= endPoint.y)) && !blackFound )
                         {
                             while (stepCount < longSide )
                             {
@@ -389,14 +400,14 @@ void MazeWidget::checkWalls()
                         }
                     }
                 }
-                else if (prevpoint.y == point.y)
+                else if (tempPoint.y == endPoint.y)
                 {
                     // X1*******X2
                     std::cout << "5. case:" << std::endl;
-                    while ( (tempPoint.x <= point.x) && !blackFound )
+                    while ( (tempPoint.x <= endPoint.x) && !blackFound )
                     {
                         //std::cout<<"stepCount: "<<stepCount<<std::endl;
-                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<", point.x: "<<point.x<<", point.y: "<<point.y<<std::endl;
+                        std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<", point.x: "<<endPoint.x<<", point.y: "<<endPoint.y<<std::endl;
                         blackFound = checkBlackPix(tempPoint.x, tempPoint.y);
                         if (blackFound)
                         {
@@ -411,9 +422,9 @@ void MazeWidget::checkWalls()
                     std::cout<<"should not be here"<<std::endl;
                 }
         }
-        else if (prevpoint.x > point.x)
+        else if (tempPoint.x > endPoint.x)
         {
-                if (prevpoint.y < point.y)
+                if (tempPoint.y < endPoint.y)
                 {
                     if( xSideBigger )
                     {
@@ -421,7 +432,7 @@ void MazeWidget::checkWalls()
                         // *        *
                         // X2********
                         std::cout << "6. case:" << std::endl;
-                        while ( ((tempPoint.x >= point.x) || (tempPoint.y <= point.y)) && !blackFound )
+                        while ( ((tempPoint.x >= endPoint.x) || (tempPoint.y <= endPoint.y)) && !blackFound )
                         {
                             while (stepCount < longSide )
                             {
@@ -449,7 +460,7 @@ void MazeWidget::checkWalls()
                         // *   *
                         // X2***
                         std::cout << "7. case:" << std::endl;
-                        while ( ((tempPoint.x >= point.x) || (tempPoint.y <= point.y)) && !blackFound )
+                        while ( ((tempPoint.x >= endPoint.x) || (tempPoint.y <= endPoint.y)) && !blackFound )
                         {
                             while (stepCount < longSide )
                             {
@@ -470,7 +481,7 @@ void MazeWidget::checkWalls()
                         }
                     }
                 }
-                else if (prevpoint.y > point.y)
+                else if (tempPoint.y > endPoint.y)
                 {
                     if( xSideBigger )
                     {
@@ -478,7 +489,7 @@ void MazeWidget::checkWalls()
                         // *        *
                         // *********X1
                         std::cout << "8. case:" << std::endl;
-                        while ( ((tempPoint.x >= point.x) || (tempPoint.y >= point.y)) && !blackFound )
+                        while ( ((tempPoint.x >= endPoint.x) || (tempPoint.y >= endPoint.y)) && !blackFound )
                         {
                             while (stepCount < longSide )
                             {
@@ -508,7 +519,7 @@ void MazeWidget::checkWalls()
                         // ***X1
                         std::cout << "9. case:" << std::endl;
                          std::cout<<"stepCount: "<<stepCount<<std::endl;
-                        while ( ((tempPoint.x >= point.x) || (tempPoint.y >= point.y)) && !blackFound )
+                        while ( ((tempPoint.x >= endPoint.x) || (tempPoint.y >= endPoint.y)) && !blackFound )
                         {
                             while (stepCount < longSide )
                             {
@@ -531,11 +542,11 @@ void MazeWidget::checkWalls()
                         }
                     }
                 }
-                else if (prevpoint.y == point.y)
+                else if (tempPoint.y == endPoint.y)
                 {
                     // X2*******X1
                     std::cout << "10. case:" << std::endl;
-                    while ( (tempPoint.x >= point.x) && !blackFound )
+                    while ( (tempPoint.x >= endPoint.x) && !blackFound )
                     {
                         std::cout<<"stepCount: "<<stepCount<<std::endl;
                         std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
@@ -554,9 +565,9 @@ void MazeWidget::checkWalls()
                     std::cout<<"should not be here"<<std::endl;
                 }
         }
-        else if(prevpoint.x == point.x)
+        else if(tempPoint.x == endPoint.x)
         {
-            if (prevpoint.y < point.y)
+            if (tempPoint.y < endPoint.y)
             {
                 // X1
                 // *
@@ -564,7 +575,7 @@ void MazeWidget::checkWalls()
                 // *
                 // X2
                 std::cout << "11. case:" << std::endl;
-                while (  (tempPoint.y <= point.y) && !blackFound )
+                while (  (tempPoint.y <= endPoint.y) && !blackFound )
                 {
                      std::cout<<"stepCount: "<<stepCount<<std::endl;
                     std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
@@ -578,7 +589,7 @@ void MazeWidget::checkWalls()
                     tempPoint.y++;
                 }
             }
-            else if (prevpoint.y > point.y)
+            else if (tempPoint.y > endPoint.y)
             {
                 // X2
                 // *
@@ -586,7 +597,7 @@ void MazeWidget::checkWalls()
                 // *
                 // X1
                 std::cout << "12. case:" << std::endl;
-                while (  (tempPoint.y >= point.y) && !blackFound )
+                while (  (tempPoint.y >= endPoint.y) && !blackFound )
                 {
                     std::cout<<"stepCount: "<<stepCount<<std::endl;
                     std::cout<<"tempPoint.x: "<<tempPoint.x<<", tempPoint.y: "<<tempPoint.y<<std::endl;
@@ -607,7 +618,6 @@ void MazeWidget::checkWalls()
 
 
 }
-
 
 void MazeWidget::paintEvent(QPaintEvent */*event*/)
 {
@@ -639,14 +649,12 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     point.y=serial->getPointY();
     point.colorCounter=serial->getPointColorCount();    
 
-    // if moving
-    //if(point.x != prevpoint.x && point.y != prevpoint.y)
-   // {
+
     //keep drawing inside of the window
     checkWindowEdges();
 
     //Don!t walk trough walls
-    checkWalls();
+    checkWalls(prevpoint, point);
 
     // Save changes
     point.x=serial->getPointX();
@@ -656,20 +664,6 @@ void MazeWidget::paintEvent(QPaintEvent */*event*/)
     pointList.push_back(point);
 
     prevpoint = point;
-   // }
-
-     /*color = (image.pixel(point.x, point.y));
-     if (color == Qt::black)
-     {
-         std::cout << " BLACK " << std::endl;
-         point = prevpoint;
-         serial->setPointX(prevpoint.x);
-         serial->setPointY(prevpoint.y);
-     }
-     else
-     {
-         std::cout << " OK  WHITE " << std::endl;
-     }*/
 
     //draw initial point
     int w = this->sizePen / 4;
